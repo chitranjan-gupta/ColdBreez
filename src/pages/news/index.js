@@ -4,7 +4,7 @@ import Image from "next/image";
 import groq from "groq";
 import { client, urlFor } from "@/lib/sanity";
 import Meta from "@/component/meta";
-import poster from "../../../public/poster-small.png";
+import {logo as poster} from "@/img/imgexport";
 
 export default function Index({ posts }) {
   const [query, setQuery] = useState("");
@@ -127,7 +127,7 @@ export default function Index({ posts }) {
                     </div>
                     <h2 className="z-10 p-5">
                       <Link
-                        href={`/blog/${encodeURIComponent(slug.current)}`}
+                        href={`/news/${encodeURIComponent(slug.current)}`}
                         className="font-medium text-md hover:underline dark:text-gray-100"
                       >
                         {title}
@@ -144,7 +144,7 @@ export default function Index({ posts }) {
 
 export async function getServerSideProps() {
   const posts = await client.fetch(groq`
-    *[_type == "post" && publishedAt < now()] | order(publishedAt desc){
+    *[_type == "post"] | order(publishedAt desc){
       _id,
       title,
       "categories": categories[]->title,

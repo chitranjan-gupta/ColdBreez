@@ -16,13 +16,9 @@ export default function About() {
           <h1 className="text-4xl underline text-center">About us</h1>
         </div>
         <div className="flex flex-row justify-between items-center w-full h-full">
-          <div className="relative w-1/2 h-60">
+          <div className="relative w-1/3 h-28">
             <Image priority={true} src={poster} alt="Poster" fill={true}/>
-          </div>
-          <div className="flex flex-row justify-center items-center h-full">
-            <Link href="/">
-              <strong>AajKaNews</strong>
-            </Link>
+            <Link href="/"></Link>
           </div>
         </div>
         <div>

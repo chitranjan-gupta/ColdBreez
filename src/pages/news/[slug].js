@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import groq from "groq";
 import { PortableText } from "@portabletext/react";
 import { client, urlFor } from "@/lib/sanity";
-import poster from "../../../public/poster-small.png";
+import { logo as poster} from "@/img/imgexport";
 
 const ptComponents = {
   types: {
@@ -70,7 +70,7 @@ const Post = ({ post }) => {
         />
         <meta
           name="og:url"
-          content={`https://www.wrenchworks.tech/blog/${router.query.slug}`}
+          content={`https://aajkanews.me/news/${router.query.slug}`}
         />
         <meta name="og:site_name" content="Wrench Works" />
         <meta name="og:locale" content="en_US" />
@@ -187,6 +187,7 @@ export async function getStaticProps(context) {
   return {
     props: {
       post,
+      revalidate: 10,
     },
   };
 }

@@ -5,13 +5,7 @@ import { client, urlFor } from "@/lib/sanity";
 import Meta from "@/component/meta";
 import { DropDown } from "@/component/header";
 import { navigation } from "@/lib/nav";
-import {
-  logo,
-  instagram,
-  threads,
-  twitter,
-  facebook,
-} from "@/img/imgexport";
+import { logo, instagram, threads, twitter, facebook } from "@/img/imgexport";
 
 export default function Main({ posts }) {
   return (
@@ -25,18 +19,17 @@ export default function Main({ posts }) {
               aria-label="Global"
             >
               <div className="flex lg:flex-1">
-                <div className="h-8 w-8">
-                  <Image
-                    priority={true}
-                    alt="logo"
-                    src={logo}
-                    width={50}
-                    height={50}
-                  />
+                <div>
+                  <a href="">
+                    <Image
+                      priority={true}
+                      alt="logo"
+                      src={logo}
+                      width={100}
+                      height={60}
+                    />
+                  </a>
                 </div>
-                <a href="" className="p-1.5">
-                  <span className="">AajKaNews</span>
-                </a>
               </div>
               <div className="block sm:hidden">
                 <DropDown options={navigation} />
@@ -77,8 +70,7 @@ export default function Main({ posts }) {
               />
             </div>
 
-            <div className="w-full flex -ml-8 justify-between flex-col sm:flex-row md:flex-row lg:flex-row">
-            </div>
+            <div className="w-full flex -ml-8 justify-between flex-col sm:flex-row md:flex-row lg:flex-row"></div>
             <div
               className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
               aria-hidden="true"
@@ -92,6 +84,55 @@ export default function Main({ posts }) {
               />
             </div>
           </div>
+        </div>
+      </section>
+      <section className="mt-5">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-4 sm:grid-cols-2">
+          {posts.length > 0 &&
+            posts.map(
+              ({
+                _id,
+                title = "",
+                categories,
+                slug = "",
+                publishedAt = "",
+                mainImage,
+              }) => (
+                <div
+                  key={_id}
+                  className="relative flex items-end justify-start w-full text-left bg-center bg-cover h-48"
+                  style={{
+                    backgroundImage: `url("${
+                      mainImage
+                        ? urlFor(mainImage).width(600).height(600).url()
+                        : "favicon-32x32.png"
+                    }")`,
+                  }}
+                >
+                  <div className="absolute top-0 bottom-0 left-0 right-0 bg-gradient-to-b dark:via-transparent dark:from-gray-500 dark:to-gray-900"></div>
+                  <div className="absolute top-0 left-0 right-0 flex items-center justify-between mx-5 mt-3">
+                    <a
+                      rel="noopener noreferrer"
+                      href="news/category"
+                      className="px-3 py-2 text-xs font-semibold tracki uppercase dark:text-gray-100 bgundefined"
+                    >
+                      {categories &&
+                        categories.map((category) => (
+                          <span key={category}> {category}</span>
+                        ))}
+                    </a>
+                  </div>
+                  <h2 className="z-10 p-5">
+                    <Link
+                      href={`/news/${encodeURIComponent(slug.current)}`}
+                      className="font-medium text-md hover:underline dark:text-gray-100"
+                    >
+                      {title}
+                    </Link>
+                  </h2>
+                </div>
+              )
+            )}
         </div>
       </section>
       <section name="newsletter">
@@ -180,10 +221,7 @@ export default function Main({ posts }) {
                 </Link>
               </li>
               <li className="flex flex-col justify-center items-center mr-2">
-                <Link
-                  target="_blank"
-                  href=""
-                >
+                <Link target="_blank" href="">
                   <Image src={threads} alt="Threads" width={20} height={20} />
                 </Link>
               </li>
@@ -193,11 +231,7 @@ export default function Main({ posts }) {
                 </Link>
               </li>
               <li className="flex flex-col justify-center items-center mr-2">
-                <Link
-                  target="_blank"
-                  href=""
-                  data-href=""
-                >
+                <Link target="_blank" href="" data-href="">
                   <Image src={facebook} alt="Facebook" width={20} height={20} />
                 </Link>
               </li>
@@ -245,7 +279,7 @@ export default function Main({ posts }) {
 
 export async function getStaticProps() {
   const posts = await client.fetch(groq`
-      *[_type == "post" && publishedAt < now()] | order(publishedAt desc){
+      *[_type == "post"] | order(publishedAt desc){
         _id,
         title,
         description,
@@ -259,7 +293,8 @@ export async function getStaticProps() {
     `);
   return {
     props: {
-      posts
+      posts,
+      revalidate: 10,
     },
   };
 }
