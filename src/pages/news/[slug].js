@@ -5,37 +5,9 @@ import { useRouter } from "next/router";
 import groq from "groq";
 import { PortableText } from "@portabletext/react";
 import { client, urlFor } from "@/lib/sanity";
-import { logo as poster} from "@/img/imgexport";
-
-const ptComponents = {
-  types: {
-    image: ({ value }) => {
-      if (!value?.asset?._ref) {
-        return null;
-      }
-      return (
-        <div className="relative w-full h-96 object-contain">
-          <Image
-            alt=""
-            loading="lazy"
-            src={urlFor(value).url()}
-            fill={true}
-          />
-        </div>
-      );
-    },
-  },
-  block: {
-    h1: ({ children }) => <h1 className="">{children}</h1>,
-    h2: ({ children }) => <h2 className="">{children}</h2>,
-    h3: ({ children }) => <h3 className="">{children}</h3>,
-    h4: ({ children }) => <h4 className="">{children}</h4>,
-    p: ({ children }) => <p className="">{children}</p>,
-    blockquote: ({ children }) => (
-      <blockquote className="border-l-purple-500">{children}</blockquote>
-    ),
-  },
-};
+import { logo as poster } from "@/img/imgexport";
+import { WEBSITE_NAME, WEBSITE_TITLE, WEBSITE_URL } from "@/lib/name";
+import { ptComponents } from "@/component/Portable";
 
 const Post = ({ post }) => {
   const router = useRouter();
@@ -70,16 +42,22 @@ const Post = ({ post }) => {
         />
         <meta
           name="og:url"
-          content={`https://aajkanews.me/news/${router.query.slug}`}
+          content={`${WEBSITE_URL}/news/${router.query.slug}`}
         />
-        <meta name="og:site_name" content="Wrench Works" />
+        <meta name="og:site_name" content={WEBSITE_NAME} />
         <meta name="og:locale" content="en_US" />
         <meta name="og:type" content="article" />
       </Head>
       <header className="flex flex-row justify-between items-center p-1 lg:p-3 mb-2">
         <div className=" h-16 w-30">
           <Link href="/">
-            <Image alt="poster" src={poster} width={200} height={100} />
+            <Image
+              alt={`${WEBSITE_TITLE}'s poster`}
+              src={poster}
+              width={200}
+              height={100}
+              className="w-auto h-auto"
+            />
           </Link>
         </div>
         <div className="bg-white hidden lg:block">

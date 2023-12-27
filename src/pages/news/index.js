@@ -4,7 +4,8 @@ import Image from "next/image";
 import groq from "groq";
 import { client, urlFor } from "@/lib/sanity";
 import Meta from "@/component/meta";
-import {logo as poster} from "@/img/imgexport";
+import { logo as poster } from "@/img/imgexport";
+import { WEBSITE_TITLE } from "@/lib/name";
 
 export default function Index({ posts }) {
   const [query, setQuery] = useState("");
@@ -33,7 +34,12 @@ export default function Index({ posts }) {
         <header className="flex flex-row justify-between items-center mb-8">
           <div className=" h-16 w-30 relative">
             <Link href="/">
-              <Image alt="poster" src={poster} width={200} height={100} />
+              <Image
+                alt={`${WEBSITE_TITLE}'s poster`}
+                src={poster}
+                width={200}
+                height={100}
+              />
             </Link>
           </div>
         </header>

@@ -1,28 +1,36 @@
 import Head from "next/head";
 import Link from "next/link";
-// import Image from "next/image";
-// import poster from "../../public/poster-small.png";
+import Image from "next/image";
+import { logo as poster } from "@/img/imgexport";
+import { WEBSITE_TITLE } from "@/lib/name";
+
 export default function Sign_In() {
   return (
     <>
       <Head>
-        <title>Sign In AajKaNews</title>
-        <meta name="description" content="Sign In on aajkanews" />
+        <title>Sign In {WEBSITE_TITLE}</title>
+        <meta name="description" content={`Sign In on ${WEBSITE_TITLE}`} />
       </Head>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <div className="flex flex-row justify-center items-center w-full h-16">
             <Link href="/">
-              {/* <Image alt="poster" src={poster} width={200} height={100} /> */}
+              <Image
+                alt={`${WEBSITE_TITLE}'s poster`}
+                src={poster}
+                width={200}
+                height={100}
+                className="w-auto h-auto"
+              />
             </Link>
           </div>
-          <h1 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            Sign in to your account
+          <h1 className="text-center text-3xl font-bold text-gray-900 mt-4">
+            Sign in to your account on {WEBSITE_TITLE}
           </h1>
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" action="#" method="POST">
+          <form className="space-y-6" action="/api" method="POST">
             <div>
               <label
                 htmlFor="email"
@@ -84,7 +92,7 @@ export default function Sign_In() {
           <p className="mt-10 text-center text-sm text-gray-500">
             Not a member?
             <Link
-              href="/sign_up"
+              href="/signup"
               className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
             >
               Sign Up Now

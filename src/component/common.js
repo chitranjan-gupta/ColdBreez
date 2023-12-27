@@ -1,4 +1,9 @@
 import Head from "next/head";
+import { WEBSITE_KEYWORDS } from "@/lib/name";
+/**
+ * 
+ * @returns Head tag containing common tags
+ */
 export default function Common() {
   return (
     <Head>
@@ -7,7 +12,7 @@ export default function Common() {
       <meta name="robots" content="index, follow" />
       <meta
         name="keywords"
-        content=""
+        content={WEBSITE_KEYWORDS}
       />
       <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
       <meta name="language" content="English" />

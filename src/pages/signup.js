@@ -1,26 +1,34 @@
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
-import {logo as poster} from "@/img/imgexport";
+import { logo as poster } from "@/img/imgexport";
+import { WEBSITE_TITLE, WEBSITE_URL } from "@/lib/name";
 export default function Sign_Up() {
   return (
     <>
       <Head>
-        <title>Sign Up AajKaNews</title>
-        <meta name="description" content="Sign Up on aajkanews" />
+        <title>Sign Up - {WEBSITE_TITLE}</title>
+        <meta name="description" content={`Sign Up on ${WEBSITE_TITLE}`} />
       </Head>
       <form
         className="flex flex-col justify-center items-center mt-3 p-5"
         method="POST"
+        action="/api"
       >
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <div className="flex flex-row justify-center items-center w-full h-16">
             <Link href="/">
-              <Image alt="poster" src={poster} width={200} height={100} />
+              <Image
+                alt={`${WEBSITE_TITLE}'s poster`}
+                src={poster}
+                width={200}
+                height={100}
+                className="w-auto h-auto"
+              />
             </Link>
           </div>
-          <h1 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            Sign up your account
+          <h1 className="text-center text-3xl font-bold text-gray-900 mt-4">
+            Sign up your account on {WEBSITE_TITLE}
           </h1>
         </div>
         <div className="space-y-12">
@@ -44,7 +52,7 @@ export default function Sign_Up() {
                 <div className="mt-2">
                   <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
                     <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">
-                      aajkanews/author/
+                      {WEBSITE_URL}/blog/author/
                     </span>
                     <input
                       type="text"
@@ -375,7 +383,7 @@ export default function Sign_Up() {
 
         <div className="mt-6 flex items-center justify-end gap-x-6">
           <Link
-            href="/sign_in"
+            href="/signin"
             className="text-sm font-semibold leading-6 text-gray-900"
           >
             Cancel

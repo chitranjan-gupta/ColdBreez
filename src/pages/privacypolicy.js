@@ -1,13 +1,15 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import {logo as poster} from "@/img/imgexport";
+import { logo as poster } from "@/img/imgexport";
+import { WEBSITE_TITLE } from "@/lib/name";
+
 export default function Privacy() {
   return (
     <>
       <Head>
-        <title>AajKaNews - Privacy Policy</title>
-        <meta name="description" content="AajKaNews - Privacy Policy"/>
+        <title>{WEBSITE_TITLE} - Privacy Policy</title>
+        <meta name="description" content={`${WEBSITE_TITLE} - Privacy Policy`} />
       </Head>
       <div className=" p-5">
         <div
@@ -25,14 +27,14 @@ export default function Privacy() {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <div className="flex flex-row justify-center items-center w-full h-16">
             <Link href="/">
-              <Image alt="poster" src={poster} width={200} height={100} />
+              <Image alt={`${WEBSITE_TITLE}'s poster`} src={poster} width={200} height={100} />
             </Link>
           </div>
         </div>
-        <h1 className="text-3xl pspan">Privacy Policy for AajKaNews</h1>
+        <h1 className="text-3xl pspan">Privacy Policy for {WEBSITE_TITLE}</h1>
         <div className="flex flex-col justify-between">
           <span className="text-xl">
-            <Link href="/">AajKaNews </Link>
+            <Link href="/">{WEBSITE_TITLE}</Link>
             is committed to protecting your privacy.
           </span>
           <span className="text-xl">
@@ -246,15 +248,15 @@ export default function Privacy() {
             <div className="">
               <span className="text-xl pspan">Contact Us: </span>
               If you have any questions or concerns regarding this Privacy
-              Policy, please contact us at{" "}
-              <Link href="/contact_us">AajKaNews</Link>
+              Policy, please contact us at
+              <Link href="/contact_us">{WEBSITE_TITLE}</Link>
             </div>
             <div className="flex flex-col justify-center ">
               By using our website, you consent to the terms of this Privacy
               Policy and agree to its conditions.
             </div>
             <div className="flex flex-col justify-center ">
-              Last Updated: 15th July, 2023
+              Last Updated: 27th December, 2023
             </div>
           </div>
         </div>

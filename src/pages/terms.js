@@ -1,13 +1,18 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import {logo as poster} from "@/img/imgexport";
+import { logo as poster } from "@/img/imgexport";
+import { WEBSITE_TITLE } from "@/lib/name";
+
 export default function Terms() {
   return (
     <>
       <Head>
-        <title>AajKaNews - Terms of Service</title>
-        <meta name="description" content="AajKaNews - Terms of Service" />
+        <title>{WEBSITE_TITLE} - Terms of Service</title>
+        <meta
+          name="description"
+          content={`${WEBSITE_TITLE} - Terms of Service`}
+        />
       </Head>
       <div
         className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
@@ -24,14 +29,19 @@ export default function Terms() {
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <div className="flex flex-row justify-center items-center w-full h-16">
           <Link href="/">
-            <Image alt="poster" src={poster} width={200} height={100} />
+            <Image
+              alt={`${WEBSITE_TITLE}'s poster`}
+              src={poster}
+              width={200}
+              height={100}
+            />
           </Link>
         </div>
       </div>
       <div className="flex flex-col justify-between items-start p-3">
-        <span>AajKaNews - Terms of Service</span>
+        <span>{WEBSITE_TITLE} - Terms of Service</span>
         <span>Last Updated: 21st July 2023.</span>
-        <span>Welcome to AajKaNews (&quot;Website&quot;).</span>
+        <span>Welcome to {WEBSITE_TITLE} (&quot;Website&quot;).</span>
         <span>
           Please read these Terms of Service (&quot;Terms&quot;) carefully
           before using the Website or any of its services. By accessing or using
@@ -43,12 +53,12 @@ export default function Terms() {
             <strong>Introduction</strong>
             <br />
             <span>
-              AajKaNews is a platform that provides world information and
-              news details for informational purposes only. The information
-              on this Website is not intended as professional advice and should
-              not be relied upon as such. We aim to provide accurate and
-              up-to-date information, but we do not warrant the completeness,
-              accuracy, reliability, or suitability of the information provided.
+              {WEBSITE_TITLE} is a platform that provides world information and
+              news details for informational purposes only. The information on
+              this Website is not intended as professional advice and should not
+              be relied upon as such. We aim to provide accurate and up-to-date
+              information, but we do not warrant the completeness, accuracy,
+              reliability, or suitability of the information provided.
             </span>
           </li>
           <li className="list-decimal">
@@ -57,19 +67,19 @@ export default function Terms() {
             <span>
               All content provided on the Website, including text, graphics,
               images, videos, logos, icons, and any other materials, are the
-              intellectual property of AajKaNews or its respective owners and
-              are protected by applicable copyright, trademark, and other
+              intellectual property of {WEBSITE_TITLE} or its respective owners
+              and are protected by applicable copyright, trademark, and other
               intellectual property laws. You may not modify, reproduce,
               distribute, or use any content from this Website without obtaining
-              prior written permission from AajKaNews or the relevant rights
-              holder.
+              prior written permission from {WEBSITE_TITLE} or the relevant
+              rights holder.
             </span>
           </li>
           <li className="list-decimal">
             <strong>User Conduct</strong>
             <br />
             <span>
-              When using AajKaNews, you agree to abide by the following
+              When using {WEBSITE_TITLE}, you agree to abide by the following
               guidelines:
             </span>
             <ul className=" pl-5">
@@ -100,14 +110,14 @@ export default function Terms() {
             <br />
             <span>
               The Website may contain links to third-party websites or services
-              that are not owned or controlled by AajKaNews. We do not
+              that are not owned or controlled by {WEBSITE_TITLE}. We do not
               endorse or assume responsibility for the content, privacy
               policies, or practices of any third-party websites or services.
-              You acknowledge and agree that AajKaNews shall not be liable,
-              directly or indirectly, for any damage or loss caused or alleged
-              to be caused by or in connection with the use of any such content,
-              goods, or services available on or through any such third-party
-              websites or services.
+              You acknowledge and agree that {WEBSITE_TITLE} shall not be
+              liable, directly or indirectly, for any damage or loss caused or
+              alleged to be caused by or in connection with the use of any such
+              content, goods, or services available on or through any such
+              third-party websites or services.
             </span>
           </li>
           <li className="list-decimal">
@@ -117,8 +127,8 @@ export default function Terms() {
               The information and services provided on the Website are provided
               on an &quot;as is&quot; and &quot;as available&quot; basis without
               any representations or warranties, express or implied.
-              AajKaNews makes no warranties or representations regarding the
-              accuracy, reliability, availability, or completeness of the
+              {WEBSITE_TITLE} makes no warranties or representations regarding
+              the accuracy, reliability, availability, or completeness of the
               Website&apos;s content or services.
             </span>
           </li>
@@ -126,7 +136,7 @@ export default function Terms() {
             <strong>Limitation of Liability</strong>
             <br />
             <span>
-              To the fullest extent permitted by applicable law, AajKaNews
+              To the fullest extent permitted by applicable law, {WEBSITE_TITLE}
               shall not be liable for any indirect, incidental, special,
               consequential, or punitive damages, or any loss of profits or
               revenue, arising out of or in connection with your use of the
@@ -137,11 +147,11 @@ export default function Terms() {
             <strong> Modifications to Terms </strong>
             <br />
             <span>
-              AajKaNews reserves the right to modify or update these Terms at
-              any time without prior notice. It is your responsibility to review
-              these Terms periodically for any changes. Your continued use of
-              the Website after any modifications to these Terms constitutes
-              acceptance of such changes.
+              {WEBSITE_TITLE} reserves the right to modify or update these Terms
+              at any time without prior notice. It is your responsibility to
+              review these Terms periodically for any changes. Your continued
+              use of the Website after any modifications to these Terms
+              constitutes acceptance of such changes.
             </span>
           </li>
           <li className="list-decimal">
@@ -158,15 +168,15 @@ export default function Terms() {
             <br />
             <span>
               If you have any questions or concerns regarding these Terms or the
-              Website, you may contact us at admin@aajkanews.
+              Website, you may contact us at admin@{WEBSITE_TITLE}.
             </span>
           </li>
         </div>
         <span>
-          By using AajKaNews, you acknowledge that you have read, understood,
-          and agree to be bound by these Terms.
+          By using {WEBSITE_TITLE}, you acknowledge that you have read,
+          understood, and agree to be bound by these Terms.
         </span>
-        <span>Thank you for using AajKaNews.</span>
+        <span>Thank you for using {WEBSITE_TITLE}.</span>
       </div>
     </>
   );

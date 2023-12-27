@@ -6,6 +6,7 @@ import Meta from "@/component/meta";
 import { DropDown } from "@/component/header";
 import { navigation } from "@/lib/nav";
 import { logo, instagram, threads, twitter, facebook } from "@/img/imgexport";
+import { WEBSITE_TITLE, WEBSITE_URL } from "@/lib/name";
 
 export default function Main({ posts }) {
   return (
@@ -15,18 +16,19 @@ export default function Main({ posts }) {
         <div className="bg-white">
           <header className="absolute inset-x-0 top-0 z-50">
             <nav
-              className="flex items-center justify-between p-4 lg:px-8"
+              className="flex items-center justify-between p-2 lg:px-8"
               aria-label="Global"
             >
               <div className="flex lg:flex-1">
                 <div>
-                  <a href="">
+                  <a href={WEBSITE_URL}>
                     <Image
                       priority={true}
-                      alt="logo"
+                      alt={`${WEBSITE_TITLE}'s logo`}
                       src={logo}
-                      width={100}
-                      height={60}
+                      width={80}
+                      height={40}
+                      className="w-auto h-auto"
                     />
                   </a>
                 </div>
@@ -47,7 +49,7 @@ export default function Main({ posts }) {
               </div>
               <div className="hidden lg:flex lg:flex-1 lg:justify-end">
                 <Link
-                  href="/sign_in"
+                  href="/signin"
                   className="text-sm font-semibold leading-6 text-gray-900"
                 >
                   Sign In <span aria-hidden="true">&rarr;</span>
@@ -61,13 +63,7 @@ export default function Main({ posts }) {
               className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
               aria-hidden="true"
             >
-              <div
-                className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
-                style={{
-                  clipPath:
-                    "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
-                }}
-              />
+              <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem] background-design" />
             </div>
 
             <div className="w-full flex -ml-8 justify-between flex-col sm:flex-row md:flex-row lg:flex-row"></div>
@@ -75,13 +71,7 @@ export default function Main({ posts }) {
               className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
               aria-hidden="true"
             >
-              <div
-                className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
-                style={{
-                  clipPath:
-                    "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
-                }}
-              />
+              <div className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem] background-design" />
             </div>
           </div>
         </div>
@@ -191,13 +181,7 @@ export default function Main({ posts }) {
             className="absolute left-1/2 top-0 -z-10 -translate-x-1/2 blur-3xl xl:-top-6"
             aria-hidden="true"
           >
-            <div
-              className="aspect-[1155/678] w-[72.1875rem] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30"
-              style={{
-                clipPath:
-                  "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
-              }}
-            />
+            <div className="aspect-[1155/678] w-[72.1875rem] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 background-design" />
           </div>
         </div>
       </section>
@@ -205,16 +189,22 @@ export default function Main({ posts }) {
         <div className="w-full mx-auto p-4 md:py-8">
           <div className="w-full flex flex-col justify-between items-start md:flex-row">
             <div className=" h-16 w-30 mb-10 md:mb-0">
-              <a href="">
-                <Image alt="poster" src={logo} width={200} height={100} />
-              </a>
+              <Link href="/">
+                <Image
+                  alt={`${WEBSITE_TITLE}'s poster`}
+                  src={logo}
+                  width={200}
+                  height={100}
+                  className="w-auto h-auto"
+                />
+              </Link>
             </div>
             <ul className="flex flex-wrap items-center mb-6 text-sm font-medium sm:mb-0 ">
               <li className="flex flex-col justify-center items-center mr-2">
                 <Link target="_blank" href="">
                   <Image
                     src={instagram}
-                    alt="Instagram "
+                    alt={`${WEBSITE_TITLE}'s Instagram`}
                     width={20}
                     height={20}
                   />
@@ -222,17 +212,32 @@ export default function Main({ posts }) {
               </li>
               <li className="flex flex-col justify-center items-center mr-2">
                 <Link target="_blank" href="">
-                  <Image src={threads} alt="Threads" width={20} height={20} />
+                  <Image
+                    src={threads}
+                    alt={`${WEBSITE_TITLE}'s Threads`}
+                    width={20}
+                    height={20}
+                  />
                 </Link>
               </li>
               <li className="flex flex-col justify-center items-center mr-2">
                 <Link target="_blank" href="">
-                  <Image src={twitter} alt="Twitter" width={20} height={20} />
+                  <Image
+                    src={twitter}
+                    alt={`${WEBSITE_TITLE}'s Twitter`}
+                    width={20}
+                    height={20}
+                  />
                 </Link>
               </li>
               <li className="flex flex-col justify-center items-center mr-2">
                 <Link target="_blank" href="" data-href="">
-                  <Image src={facebook} alt="Facebook" width={20} height={20} />
+                  <Image
+                    src={facebook}
+                    alt={`${WEBSITE_TITLE}'s Facebook`}
+                    width={20}
+                    height={20}
+                  />
                 </Link>
               </li>
               <li>
@@ -242,14 +247,14 @@ export default function Main({ posts }) {
               </li>
               <li>
                 <Link
-                  href="/privacy_policy"
+                  href="/privacypolicy"
                   className="mr-4 hover:underline md:mr-6"
                 >
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/contact_us" className="hover:underline">
+                <Link href="/contactus" className="hover:underline">
                   Contact
                 </Link>
               </li>
@@ -268,7 +273,7 @@ export default function Main({ posts }) {
           <hr className="my-6 border-gray-200 sm:mx-auto lg:my-8" />
           <span className="block text-sm sm:text-center">
             <a href="" className="hover:underline">
-              © 2023 AajKaNews™
+              © 2023 {WEBSITE_TITLE}™
             </a>
           </span>
         </div>

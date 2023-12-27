@@ -2,7 +2,9 @@ import { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
-import {logo as poster} from "@/img/imgexport";
+import { logo as poster } from "@/img/imgexport";
+import { WEBSITE_TITLE } from "@/lib/name";
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -13,8 +15,8 @@ export default function Example() {
   return (
     <>
       <Head>
-        <title>AajKaNews - Contact Us</title>
-        <meta name="description" content="AajKaNews - Contact Us" />
+        <title>{WEBSITE_TITLE} - Contact Us</title>
+        <meta name="description" content={`${WEBSITE_TITLE} - Contact Us`} />
       </Head>
       <div className="isolate bg-white px-6 py-10 sm:py-10 lg:px-4">
         <div
@@ -32,7 +34,12 @@ export default function Example() {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <div className="flex flex-row justify-center items-center w-full h-16">
             <Link href="/">
-              <Image alt="poster" src={poster} width={200} height={100} />
+              <Image
+                alt={`${WEBSITE_TITLE}'s poster`}
+                src={poster}
+                width={200}
+                height={100}
+              />
             </Link>
           </div>
         </div>
