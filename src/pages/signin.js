@@ -8,7 +8,7 @@ export default function Sign_In() {
   return (
     <>
       <Head>
-        <title>Sign In {WEBSITE_TITLE}</title>
+        <title>Sign In - {WEBSITE_TITLE}</title>
         <meta name="description" content={`Sign In on ${WEBSITE_TITLE}`} />
       </Head>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
