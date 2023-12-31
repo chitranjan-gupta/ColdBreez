@@ -14,20 +14,20 @@ export default function About() {
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(45rem_50rem_at_top,theme(colors.indigo.100),white)] opacity-20" />
       <div className="absolute inset-y-0 right-1/2 -z-10 mr-16 w-[200%] origin-bottom-left skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:mr-28 lg:mr-0 xl:mr-16 xl:origin-center" />
       <div className="absolute flex flex-col items-start justify-between w-full h-full p-5">
-        <div className="w-full">
-          <h1 className="text-4xl underline text-center">About us</h1>
-        </div>
-        <div className="flex flex-row justify-between items-center w-full h-full">
-          <div className="">
-            <Link href="/" className="relative w-1/3 h-28">
-              <Image
-                priority={true}
-                src={poster}
-                alt={`${WEBSITE_TITLE}'s poster`}
-                fill={true}
-              />
-            </Link>
-          </div>
+        <div className="w-full flex flex-col lg:flex-row">
+          <Link href="/" className="">
+            <Image
+              priority={true}
+              src={poster}
+              alt={`${WEBSITE_TITLE}'s poster`}
+              width={200}
+              height={100}
+              className="w-auto h-auto"
+            />
+          </Link>
+          <h1 className="text-4xl underline text-center">
+            {WEBSITE_TITLE} - About us
+          </h1>
         </div>
         <div>
           <div className="flex flex-col justify-evenly items-start">

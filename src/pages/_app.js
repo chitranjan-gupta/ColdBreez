@@ -1,8 +1,8 @@
 import "@/styles/globals.css";
+import { useEffect, useState } from "react";
 import Common from "@/component/common";
 import { useRouter } from "next/router";
 import Script from "next/script";
-import { useEffect } from "react";
 import * as gtag from "@/lib/gtag";
 
 const App = ({ Component, pageProps }) => {
@@ -16,6 +16,26 @@ const App = ({ Component, pageProps }) => {
       router.events.off("routeChangeComplete", handleRouteChange);
     };
   }, [router.events]);
+  const [loading, setLoading] = useState(false);
+  const [isSWRegistred, setIsSWRegistred] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (!loading) {
+        if(!isSWRegistred){
+          import("@/lib/service").then((module) => {
+            module.default();
+            setIsSWRegistred(true);
+          });
+        }
+      }
+    }
+  }, [isSWRegistred]);
+  useEffect(() => {
+    return function cleanup() {
+      setLoading(true);
+      console.log("[log] Cleanup");
+    };
+  }, []);
   return (
     <>
       <Common />

@@ -1,12 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import groq from "groq";
-import { client, urlFor } from "@/lib/sanity";
+import { client } from "@/lib/sanity";
 import Meta from "@/component/meta";
-import { DropDown } from "@/component/header";
 import { navigation } from "@/lib/nav";
-import { logo, instagram, threads, twitter, facebook } from "@/img/imgexport";
+import { poster,instagram, threads, twitter, facebook } from "@/img/imgexport";
 import { WEBSITE_TITLE, WEBSITE_URL } from "@/lib/name";
+import Header from "@/component/header";
+import { BoltIcon } from "@heroicons/react/20/solid";
+import PostCard from "@/component/post";
 
 export default function Main({ posts }) {
   return (
@@ -14,50 +16,6 @@ export default function Main({ posts }) {
       <Meta />
       <section name="hero" id="hero">
         <div className="bg-white">
-          <header className="absolute inset-x-0 top-0 z-50">
-            <nav
-              className="flex items-center justify-between p-2 lg:px-8"
-              aria-label="Global"
-            >
-              <div className="flex lg:flex-1">
-                <div>
-                  <a href={WEBSITE_URL}>
-                    <Image
-                      priority={true}
-                      alt={`${WEBSITE_TITLE}'s logo`}
-                      src={logo}
-                      width={80}
-                      height={40}
-                      className="w-auto h-auto"
-                    />
-                  </a>
-                </div>
-              </div>
-              <div className="block sm:hidden">
-                <DropDown options={navigation} />
-              </div>
-              <div className="hidden lg:flex lg:gap-x-12">
-                {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className="text-sm font-semibold leading-6 text-gray-900"
-                  >
-                    {item.name}
-                  </a>
-                ))}
-              </div>
-              <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                <Link
-                  href="/signin"
-                  className="text-sm font-semibold leading-6 text-gray-900"
-                >
-                  Sign In <span aria-hidden="true">&rarr;</span>
-                </Link>
-              </div>
-            </nav>
-          </header>
-
           <div className="relative isolate px-6 pt-14 lg:px-8">
             <div
               className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
@@ -65,8 +23,13 @@ export default function Main({ posts }) {
             >
               <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem] background-design" />
             </div>
-
-            <div className="w-full flex -ml-8 justify-between flex-col sm:flex-row md:flex-row lg:flex-row"></div>
+            <Header options={navigation} />
+            <div className="relative grid grid-cols-1 gap-5 lg:grid-cols-4 sm:grid-cols-2 my-12 -z-10">
+              {posts.length > 0 &&
+                posts.map((post) => (
+                  <PostCard key={post._id} post={post} postType="news" />
+                ))}
+            </div>
             <div
               className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
               aria-hidden="true"
@@ -74,55 +37,6 @@ export default function Main({ posts }) {
               <div className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem] background-design" />
             </div>
           </div>
-        </div>
-      </section>
-      <section className="mt-5">
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-4 sm:grid-cols-2">
-          {posts.length > 0 &&
-            posts.map(
-              ({
-                _id,
-                title = "",
-                categories,
-                slug = "",
-                publishedAt = "",
-                mainImage,
-              }) => (
-                <div
-                  key={_id}
-                  className="relative flex items-end justify-start w-full text-left bg-center bg-cover h-48"
-                  style={{
-                    backgroundImage: `url("${
-                      mainImage
-                        ? urlFor(mainImage).width(600).height(600).url()
-                        : "favicon-32x32.png"
-                    }")`,
-                  }}
-                >
-                  <div className="absolute top-0 bottom-0 left-0 right-0 bg-gradient-to-b dark:via-transparent dark:from-gray-500 dark:to-gray-900"></div>
-                  <div className="absolute top-0 left-0 right-0 flex items-center justify-between mx-5 mt-3">
-                    <a
-                      rel="noopener noreferrer"
-                      href="news/category"
-                      className="px-3 py-2 text-xs font-semibold tracki uppercase dark:text-gray-100 bgundefined"
-                    >
-                      {categories &&
-                        categories.map((category) => (
-                          <span key={category}> {category}</span>
-                        ))}
-                    </a>
-                  </div>
-                  <h2 className="z-10 p-5">
-                    <Link
-                      href={`/news/${encodeURIComponent(slug.current)}`}
-                      className="font-medium text-md hover:underline dark:text-gray-100"
-                    >
-                      {title}
-                    </Link>
-                  </h2>
-                </div>
-              )
-            )}
         </div>
       </section>
       <section name="newsletter">
@@ -136,7 +50,11 @@ export default function Main({ posts }) {
                 <p className="mt-4 text-lg leading-8 text-gray-300">
                   Don&apos;t Miss out: Exclusive Articles.
                 </p>
-                <div className="mt-6 flex max-w-md gap-x-4">
+                <form
+                  className="mt-6 flex max-w-md gap-x-4"
+                  method="POST"
+                  action="/api"
+                >
                   <label htmlFor="email-address" className="sr-only">
                     Email address
                   </label>
@@ -155,20 +73,24 @@ export default function Main({ posts }) {
                   >
                     Subscribe
                   </button>
-                </div>
+                </form>
               </div>
               <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:pt-2">
                 <div className="flex flex-col items-start">
-                  <div className="rounded-md bg-white/5 p-2 ring-1 ring-white/10"></div>
+                  <div className="rounded-md bg-white/5 p-2 ring-1 ring-white/10">
+                    <BoltIcon className="h-5 w-5 text-amber-500" />
+                  </div>
                   <dt className="mt-4 font-semibold text-white">
-                    Weekly articles
+                    Daily articles
                   </dt>
                   <dd className="mt-2 leading-7 text-gray-400">
-                    Every week we post articles on car.
+                    Every day we post news articles.
                   </dd>
                 </div>
                 <div className="flex flex-col items-start">
-                  <div className="rounded-md bg-white/5 p-2 ring-1 ring-white/10"></div>
+                  <div className="rounded-md bg-white/5 p-2 ring-1 ring-white/10">
+                    <BoltIcon className="h-5 w-5 text-amber-500" />
+                  </div>
                   <dt className="mt-4 font-semibold text-white">No spam</dt>
                   <dd className="mt-2 leading-7 text-gray-400">
                     We do not send spam emails.
@@ -188,58 +110,81 @@ export default function Main({ posts }) {
       <footer className="bg-white rounded-lg shadow m-4">
         <div className="w-full mx-auto p-4 md:py-8">
           <div className="w-full flex flex-col justify-between items-start md:flex-row">
-            <div className=" h-16 w-30 mb-10 md:mb-0">
-              <Link href="/">
-                <Image
-                  alt={`${WEBSITE_TITLE}'s poster`}
-                  src={logo}
-                  width={200}
-                  height={100}
-                  className="w-auto h-auto"
-                />
-              </Link>
+            <div className="w-full h-32 md:w-1/4 md:mb-0">
+              <div className="w-full h-full">
+                <Link href="/" className="relative block h-32 w-70">
+                  <Image
+                    alt={`${WEBSITE_TITLE}'s poster`}
+                    src={poster}
+                    fill={true}
+                    sizes="100w"
+                    className="w-auto h-auto object-cover object-center"
+                  />
+                </Link>
+              </div>
             </div>
-            <ul className="flex flex-wrap items-center mb-6 text-sm font-medium sm:mb-0 ">
-              <li className="flex flex-col justify-center items-center mr-2">
-                <Link target="_blank" href="">
-                  <Image
-                    src={instagram}
-                    alt={`${WEBSITE_TITLE}'s Instagram`}
-                    width={20}
-                    height={20}
-                  />
+            <ul className="grid grid-cols-1 grid-rows-4 justify-start gap-y-2 md:w-1/2 md:grid-rows-2 md:grid-cols-2">
+              <li className="flex">
+                <Link
+                  target="_blank"
+                  className="flex flex-row items-center"
+                  href="https://instagram.com/coldbreez_"
+                >
+                  <div className="rounded-md bg-white/5 p-2 ring-1 ring-black/10">
+                    <Image
+                      src={instagram}
+                      alt="Instagram "
+                      width={20}
+                      height={20}
+                    />
+                  </div>
+                  <span className="ml-2">instagram.com/coldbreez_</span>
                 </Link>
               </li>
-              <li className="flex flex-col justify-center items-center mr-2">
-                <Link target="_blank" href="">
-                  <Image
-                    src={threads}
-                    alt={`${WEBSITE_TITLE}'s Threads`}
-                    width={20}
-                    height={20}
-                  />
+              <li className="flex">
+                <Link
+                  target="_blank"
+                  className="flex flex-row items-center"
+                  href="https://www.threads.net/@coldbreez_"
+                >
+                  <div className="rounded-md bg-white/5 p-2 ring-1 ring-black/10">
+                    <Image src={threads} alt="Threads" width={20} height={20} />
+                  </div>
+                  <span className="ml-2">threads.net/@coldbreez_</span>
                 </Link>
               </li>
-              <li className="flex flex-col justify-center items-center mr-2">
-                <Link target="_blank" href="">
-                  <Image
-                    src={twitter}
-                    alt={`${WEBSITE_TITLE}'s Twitter`}
-                    width={20}
-                    height={20}
-                  />
+              <li className="flex">
+                <Link
+                  target="_blank"
+                  className="flex flex-row items-center"
+                  href="https://x.com/@coldbreez_"
+                >
+                  <div className="rounded-md bg-white/5 p-2 ring-1 ring-black/10">
+                    <Image src={twitter} alt="X" width={20} height={20} />
+                  </div>
+                  <span className="ml-2">x.com/@coldbreez_</span>
                 </Link>
               </li>
-              <li className="flex flex-col justify-center items-center mr-2">
-                <Link target="_blank" href="" data-href="">
-                  <Image
-                    src={facebook}
-                    alt={`${WEBSITE_TITLE}'s Facebook`}
-                    width={20}
-                    height={20}
-                  />
+              <li className="flex">
+                <Link
+                  target="_blank"
+                  className="flex flex-row items-center"
+                  href="https://www.facebook.com/profile.php?id=61555122121402"
+                  data-href="https://www.facebook.com/profile.php?id="
+                >
+                  <div className="rounded-md bg-white/5 p-2 ring-1 ring-black/10">
+                    <Image
+                      src={facebook}
+                      alt="Facebook"
+                      width={20}
+                      height={20}
+                    />
+                  </div>
+                  <span className="ml-2">facebook.com/coldbreez</span>
                 </Link>
               </li>
+            </ul>
+            <ul className="md:w-1/4 flex flex-wrap items-center mb-6 text-sm font-medium sm:mb-0 ">
               <li>
                 <Link href="/about" className="mr-4 hover:underline md:mr-6 ">
                   About
@@ -255,7 +200,7 @@ export default function Main({ posts }) {
               </li>
               <li>
                 <Link href="/contactus" className="hover:underline">
-                  Contact
+                  Contact Us
                 </Link>
               </li>
               <li>
@@ -272,7 +217,7 @@ export default function Main({ posts }) {
           </div>
           <hr className="my-6 border-gray-200 sm:mx-auto lg:my-8" />
           <span className="block text-sm sm:text-center">
-            <a href="" className="hover:underline">
+            <a href={WEBSITE_URL} className="hover:underline">
               © 2023 {WEBSITE_TITLE}™
             </a>
           </span>
@@ -290,6 +235,7 @@ export async function getStaticProps() {
         description,
         "name": author->name,
         "categories": categories[]->title,
+        "subcategories": subcategories[]->title,
         publishedAt,
         slug,
         "authorImage": author->image,

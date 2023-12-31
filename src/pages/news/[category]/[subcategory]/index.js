@@ -3,8 +3,8 @@ import groq from "groq";
 import { client } from "@/lib/sanity";
 import Meta from "@/component/meta";
 import Header from "@/component/header";
-import { navigation } from "@/lib/nav";
 import PostCard from "@/component/post";
+import { navigation, capitalize } from "@/lib/nav";
 
 export default function Index({ posts }) {
   const [query, setQuery] = useState("");
@@ -72,9 +72,12 @@ export default function Index({ posts }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+  const { subcategory } = context.params;
   const posts = await client.fetch(groq`
-    *[_type == "post" && publishedAt < now()] | order(publishedAt desc){
+  *[_type == "post" && references(*[_type == "subcategory" && title == "${capitalize(
+    subcategory
+  )}"]._id)]{
       _id,
       title,
       "name": author->name,
