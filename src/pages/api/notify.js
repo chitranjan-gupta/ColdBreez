@@ -6,7 +6,14 @@ export default async function handler(req, res) {
     res.status(200).json({});
     const subscriptions = await sql`SELECT * FROM Subscriptions;`;
     subscriptions.rows.forEach((subscription) => {
-      const payload = JSON.stringify({ title: "Push test" });
+      const payload = JSON.stringify({
+        title: `New Notification`,
+        data: {
+          slug: `test`,
+          category: `test`,
+          subcategory: `test`,
+        },
+      });
       push(subscription.json_column, payload);
     })
   }

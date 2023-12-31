@@ -5,12 +5,18 @@ self.addEventListener("push", (event) => {
   self.registration.showNotification(data.title, {
     body: "ColdBreez",
     icon: "https://coldbreez.me/android-chrome-192x192.png",
-    data: data,
+    data: data.data,
   });
 });
 self.addEventListener("notificationclick", (event) => {
   const slug = event.notification.data.slug;
-  self.clients.openWindow(`/news/${slug}`);
+  if(slug && slug == "test"){
+    self.clients.openWindow(`/`);
+    return;
+  }
+  const category = event.notification.data.category.toLowerCase();
+  const subcategory = event.notification.data.subcategory.toLowerCase();
+  self.clients.openWindow(`/news/${category}/${subcategory}/${slug}`);
 });
 self.addEventListener("install", () => {
   console.log("service worker installed");
