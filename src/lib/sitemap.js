@@ -1,7 +1,7 @@
-import { WEBSITE_URL } from "./name";
+import { WEBSITE_URL } from "@/lib/name";
 
 export function generateSiteMap(posts) {
-    return `<?xml version="1.0" encoding="UTF-8"?>
+  return `<?xml version="1.0" encoding="UTF-8"?>
      <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
        <url>
          <loc>${WEBSITE_URL}</loc>
@@ -44,10 +44,10 @@ export function generateSiteMap(posts) {
           <priority>0.64</priority>
       </url>
        ${posts
-         .map(({ _id, slug = "" }) => {
+         .map(({ _id, slug = "", categories, subcategories }) => {
            return `
          <url>
-             <loc>${`${WEBSITE_URL}/news/${slug.current}`}</loc>
+             <loc>${WEBSITE_URL}/news/${categories[0].toLowerCase()}/${subcategories[0].toLowerCase()}/${slug.current}</loc>
              <lastmod>${new Date().toISOString()}</lastmod>
              <priority>0.80</priority>
          </url>
@@ -56,4 +56,4 @@ export function generateSiteMap(posts) {
          .join("")}
      </urlset>
    `;
-  }
+}

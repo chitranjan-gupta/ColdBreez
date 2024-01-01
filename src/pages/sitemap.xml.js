@@ -5,12 +5,12 @@ import { generateSiteMap } from "@/lib/sitemap";
 function SiteMap() {}
 
 export async function getServerSideProps({ res }) {
-  const posts = await client.fetch(groq`
-    *[_type == "post" && publishedAt < now()] | order(publishedAt desc){
+  const posts = await client.fetch(groq`*[_type == "post"] | order(publishedAt desc){
       _id,
-      slug
-    }
-  `);
+      slug,
+      "categories":categories[]->title,
+      "subcategories":subcategories[]->title,
+  }`);
   // We generate the XML sitemap with the posts data
   const sitemap = generateSiteMap(posts);
 
