@@ -16,6 +16,7 @@ export default function Common() {
       />
       <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
       <meta name="language" content="English" />
+      <meta name="google-site-verification" content="4eb1eN_ax5ch5dCYpluofAZ4e4LuUr5389PWYTxy2Js" />
       <link rel="icon" type="image/x-icon" href="/favicon.ico" />
       <link rel="manifest" href="/site.webmanifest" />
       <link
