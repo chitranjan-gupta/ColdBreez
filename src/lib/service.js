@@ -21,8 +21,7 @@ export default async function registerServiceWorker() {
       return true;
     }
     console.log("Service worker starts loading");
-    const publicVapidKey =
-      "BDxb3Jt4H0sZrPK_X3UyU9nthpQIVCml89qxbuMsqvbgXne6aj-h4eHS6DDfEsBcggJIRKPoL8dloDGjqL3LZF0";
+    const publicVapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
     console.log("Registering Service Worker");
     const registration = await navigator.serviceWorker.register("/sw.js", {
       scope: "/",
