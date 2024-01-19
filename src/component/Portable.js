@@ -1,4 +1,7 @@
 import Image from "next/image";
+import ReactPlayer from "react-player";
+import { Tweet } from "react-tweet";
+import { Tweetcomponents } from "@/component/tweet-components";
 
 export const ptComponents = {
   types: {
@@ -11,6 +14,14 @@ export const ptComponents = {
           <Image alt="" loading="lazy" src={urlFor(value).url()} fill={true} />
         </div>
       );
+    },
+    youtube: ({ node }) => {
+      const { url } = node;
+      return <ReactPlayer url={url} />;
+    },
+    twitter: ({ node }) => {
+      const { id } = node;
+      return <Tweet id={id} components={Tweetcomponents} />;
     },
   },
   block: {

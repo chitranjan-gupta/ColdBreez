@@ -1,7 +1,9 @@
-const { withAxiom } = require('next-axiom');
+const { withAxiom } = require("next-axiom");
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  poweredByHeader: false,
+  generateEtags: true,
   images: {
     remotePatterns: [
       {
@@ -34,6 +36,8 @@ const nextConfig = {
         hostname: "prog-ace-cdn.azureedge.net",
         port: "",
       },
+      { protocol: "https", hostname: "pbs.twimg.com", port: "" },
+      { protocol: "https", hostname: "abs.twimg.com", port: "" },
     ],
   },
   async redirects() {
@@ -50,6 +54,7 @@ const nextConfig = {
       },
     ];
   },
+  transpilePackages: ["react-tweet"],
 };
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({

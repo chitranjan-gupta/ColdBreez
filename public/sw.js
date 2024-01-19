@@ -10,7 +10,7 @@ self.addEventListener("push", (event) => {
 });
 self.addEventListener("notificationclick", (event) => {
   const slug = event.notification.data.slug;
-  if(slug && slug == "test"){
+  if (slug && slug == "test") {
     self.clients.openWindow(`/`);
     return;
   }

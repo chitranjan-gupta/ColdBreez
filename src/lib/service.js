@@ -1,8 +1,8 @@
 export default async function registerServiceWorker() {
   if ("serviceWorker" in navigator) {
-    console.log("Checking for permission")
+    console.log("Checking for permission");
     const check = await requestPermission();
-    if(!check){
+    if (!check) {
       return false;
     }
     console.log("Checking service is already registered or not");
@@ -32,7 +32,7 @@ export default async function registerServiceWorker() {
         console.log("Registering Push Notification");
         const subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: publicVapidKey,
+          applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
         });
         console.log("Sending push");
         await fetch("/api/subscribe", {
@@ -57,7 +57,7 @@ export default async function registerServiceWorker() {
 async function requestPermission() {
   if ("Notification" in window) {
     if (Notification.permission === "default") {
-      console.log("Notification permision is default. Asking for permission.")
+      console.log("Notification permision is default. Asking for permission.");
       const permission = await Notification.requestPermission();
       if (permission === "granted") {
         console.log("Notification permission granted.");
@@ -77,4 +77,17 @@ async function requestPermission() {
     console.log("Notification not supported in this browser.");
     return false;
   }
+}
+
+function urlBase64ToUint8Array(base64String) {
+  var padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  var base64 = (base64String + padding).replace(/\-/g, "+").replace(/_/g, "/");
+
+  var rawData = window.atob(base64);
+  var outputArray = new Uint8Array(rawData.length);
+
+  for (var i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
 }

@@ -1,10 +1,10 @@
 import { sql } from "@vercel/postgres";
 import { push } from "@/lib/push-notification";
-import { log } from "next-axiom";
+import { withAxiom } from "next-axiom";
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method == "GET") {
-    log.debug("web-notify", { test: "Testing web-notify"});
+    req.log.info("web-notify api/notify");
     res.status(200).json({});
     const subscriptions = await sql`SELECT * FROM Subscriptions;`;
     subscriptions.rows.forEach((subscription) => {
@@ -17,6 +17,8 @@ export default async function handler(req, res) {
         },
       });
       push(subscription.json_column, payload);
-    })
+    });
   }
 }
+
+export default withAxiom(handler);
