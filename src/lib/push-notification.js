@@ -11,5 +11,5 @@ webpush.setVapidDetails(
 
 export async function push(subscription, payload) {
   const result = await webpush.sendNotification(subscription, payload);
-  console.log(result)
+  return result;
 }
