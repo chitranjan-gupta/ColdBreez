@@ -1,7 +1,7 @@
 import Image from "next/image";
 import ReactPlayer from "react-player";
+import { Tweetcomponents } from "@/component/tweet";
 import { Tweet } from "react-tweet";
-import { Tweetcomponents } from "@/component/tweet-components";
 
 export const ptComponents = {
   types: {
@@ -15,11 +15,23 @@ export const ptComponents = {
         </div>
       );
     },
-    youtube: ({ url }) => {
+    youtube: ({ value }) => {
+      if (!value) {
+        return null;
+      }
+      const { url } = value;
       return <ReactPlayer url={url} />;
     },
-    twitter: ({ id }) => {
-      return <Tweet id={id} components={Tweetcomponents} />;
+    twitter: ({ value }) => {
+      if (!value) {
+        return null;
+      }
+      const { id } = value;
+      return (
+        <div className="light flex justify-center items-center">
+          <Tweet id={id} components={Tweetcomponents}/>
+        </div>
+      );
     },
   },
   block: {
