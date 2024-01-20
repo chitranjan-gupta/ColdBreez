@@ -15,12 +15,10 @@ export const ptComponents = {
         </div>
       );
     },
-    youtube: ({ node }) => {
-      const { url } = node;
+    youtube: ({ url }) => {
       return <ReactPlayer url={url} />;
     },
-    twitter: ({ node }) => {
-      const { id } = node;
+    twitter: ({ id }) => {
       return <Tweet id={id} components={Tweetcomponents} />;
     },
   },
