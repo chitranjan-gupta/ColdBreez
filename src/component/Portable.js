@@ -20,7 +20,11 @@ export const ptComponents = {
         return null;
       }
       const { url } = value;
-      return <ReactPlayer url={url} />;
+      return (
+        <div className="youtubeview">
+          <ReactPlayer url={url} width={'100%'} height={'100%'}/>
+        </div>
+      );
     },
     twitter: ({ value }) => {
       if (!value) {
@@ -28,8 +32,8 @@ export const ptComponents = {
       }
       const { id } = value;
       return (
-        <div className="light flex justify-center items-center">
-          <Tweet id={id} components={Tweetcomponents}/>
+        <div className="light tweetview">
+          <Tweet id={id} components={Tweetcomponents} />
         </div>
       );
     },

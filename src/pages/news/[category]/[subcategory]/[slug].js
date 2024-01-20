@@ -52,7 +52,7 @@ const Post = ({ post }) => {
       </Head>
       <Header options={navigation} />
       <div className="flex flex-row justify-center items-center p-2 sm:px-0 mt-12">
-        <article className="prose prose-stone lg:prose-xl bg-white">
+        <article className="prose prose-stone sm:prose-sm lg:prose-xl bg-white">
           <h1 className="">{title}</h1>
           <h4 className=" text-slate-600">{description}</h4>
           <div className="not-prose flex flex-row justify-between items-center border-y w-full mt-3 mb-3 p-1">
