@@ -1,3 +1,4 @@
+import React from "react";
 import Image from "next/image";
 import ReactPlayer from "react-player";
 import { Tweetcomponents } from "@/component/tweet";
@@ -22,7 +23,7 @@ export const ptComponents = {
       const { url } = value;
       return (
         <div className="youtubeview">
-          <ReactPlayer url={url} width={'100%'} height={'100%'}/>
+          <ReactPlayer url={url} width={"100%"} height={"100%"} />
         </div>
       );
     },
@@ -34,6 +35,25 @@ export const ptComponents = {
       return (
         <div className="light tweetview">
           <Tweet id={id} components={Tweetcomponents} />
+        </div>
+      );
+    },
+    table: ({ value }) => {
+      if (!value) {
+        return null;
+      }
+      const { rows, _key } = value;
+      return (
+        <div className="tableview">
+          <table key={_key} className="border">
+            {rows.map(({ cells, _key }, i) => (
+              <tr key={_key} className="border text-center">
+                {i == 0
+                  ? cells.map((d) => <th key={d} className="border p-1">{d}</th>)
+                  : cells.map((d) => <td key={d} className="border p-1">{d}</td>)}
+              </tr>
+            ))}
+          </table>
         </div>
       );
     },
