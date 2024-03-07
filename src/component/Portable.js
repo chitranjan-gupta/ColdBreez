@@ -1,8 +1,10 @@
 import React from "react";
 import Image from "next/image";
 import ReactPlayer from "react-player";
-import { Tweetcomponents } from "@/component/tweet";
 import { Tweet } from "react-tweet";
+import { Tweetcomponents } from "@/component/tweet";
+import { InstaPost } from "@/component/instagram";
+import { Table } from "@/component/table";
 
 export const ptComponents = {
   types: {
@@ -27,6 +29,15 @@ export const ptComponents = {
         </div>
       );
     },
+    instagram: ({ value }) => {
+      if (!value) {
+        return null;
+      }
+      const { url } = value;
+      return (
+        <InstaPost url={url}/>
+      );
+    },
     twitter: ({ value }) => {
       if (!value) {
         return null;
@@ -42,20 +53,8 @@ export const ptComponents = {
       if (!value) {
         return null;
       }
-      const { rows, _key } = value;
-      return (
-        <div className="tableview">
-          <table key={_key} className="border">
-            {rows.map(({ cells, _key }, i) => (
-              <tr key={_key} className="border text-center">
-                {i == 0
-                  ? cells.map((d) => <th key={d} className="border p-1">{d}</th>)
-                  : cells.map((d) => <td key={d} className="border p-1">{d}</td>)}
-              </tr>
-            ))}
-          </table>
-        </div>
-      );
+      const { rows } = value;
+      return <Table rows={rows}/>
     },
   },
   block: {
