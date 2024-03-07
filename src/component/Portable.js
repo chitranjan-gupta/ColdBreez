@@ -14,7 +14,7 @@ export const ptComponents = {
       }
       return (
         <div className="relative w-full h-96 object-contain">
-          <Image alt="" loading="lazy" src={urlFor(value).url()} fill={true} />
+          <Image alt={value.asset._ref} loading="lazy" src={urlFor(value).fit("clip").url()} fill={true} />
         </div>
       );
     },
@@ -45,7 +45,7 @@ export const ptComponents = {
       const { id } = value;
       return (
         <div className="light tweetview">
-          <Tweet id={id} components={Tweetcomponents} />
+          <Tweet id={id} components={Tweetcomponents}/>
         </div>
       );
     },
