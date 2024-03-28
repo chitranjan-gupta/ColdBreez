@@ -10,28 +10,44 @@ export default function Privacy() {
     <>
       <Head>
         <title>{WEBSITE_TITLE} - Privacy Policy</title>
-        <meta name="description" content={`${WEBSITE_TITLE} - Privacy Policy`} />
+        <meta
+          name="description"
+          content={`${WEBSITE_TITLE} - Privacy Policy`}
+        />
       </Head>
       <div className=" p-5">
         <div
           className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
           aria-hidden="true"
         >
-          <div
-            className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem] background-design"
-          />
+          <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem] background-design" />
         </div>
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <div className="flex flex-row justify-center items-center w-full">
-            <Link href="/" className="w-full flex flex-col lg:flex-row" prefetch={false}>
-              <Image alt={`${WEBSITE_TITLE}'s poster`} src={poster} width={150} height={100} className="w-auto h-auto"/>
-              <h1 className="text-3xl text-center pspan">Privacy Policy for {WEBSITE_TITLE}</h1>
+            <Link
+              href="/"
+              className="w-full flex flex-col lg:flex-row"
+              prefetch={false}
+            >
+              <Image
+                alt={`${WEBSITE_TITLE}'s poster`}
+                src={poster}
+                width={150}
+                height={100}
+                className="w-auto h-auto"
+              />
+              <h1 className="text-3xl text-center pspan">
+                Privacy Policy for {WEBSITE_TITLE}
+              </h1>
             </Link>
           </div>
         </div>
         <div className="flex flex-col justify-between">
           <span className="text-xl">
-            <Link href="/" prefetch={false}>{WEBSITE_TITLE} </Link>is committed to protecting your privacy.
+            <Link href="/" prefetch={false}>
+              {WEBSITE_TITLE}{" "}
+            </Link>
+            is committed to protecting your privacy.
           </span>
           <span className="text-xl">
             Please read this Privacy Policy carefully to understand our
@@ -245,7 +261,9 @@ export default function Privacy() {
               <span className="text-xl pspan">Contact Us: </span>
               If you have any questions or concerns regarding this Privacy
               Policy, please contact us at
-              <Link href="/contact_us" prefetch={false}>{WEBSITE_TITLE}</Link>
+              <Link href="/contact_us" prefetch={false}>
+                {WEBSITE_TITLE}
+              </Link>
             </div>
             <div className="flex flex-col justify-center ">
               By using our website, you consent to the terms of this Privacy

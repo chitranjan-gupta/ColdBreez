@@ -5,7 +5,8 @@ import { generateSiteMap } from "@/lib/sitemap";
 function SiteMap() {}
 
 export async function getServerSideProps({ res }) {
-  const posts = await client.fetch(groq`*[_type == "post"] | order(publishedAt desc){
+  const posts =
+    await client.fetch(groq`*[_type == "post"] | order(publishedAt desc){
       _id,
       slug,
       "lastModified": _updatedAt,

@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",
@@ -37,7 +39,9 @@
     "@types/web-push": "^3.6.3",
     "eslint": "^8.49.0",
     "eslint-config-next": "^13.4.19",
+    "eslint-config-prettier": "^9.1.0",
     "postcss": "^8.4.29",
+    "prettier": "3.2.5",
     "sharp": "^0.32.5",
     "typescript": "5.4.3"
   }

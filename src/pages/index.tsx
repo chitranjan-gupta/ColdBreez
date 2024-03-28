@@ -1,4 +1,4 @@
-import React, { Fragment} from "react";
+import React, { Fragment } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import groq from "groq";
@@ -24,10 +24,10 @@ export default function Main({ posts }) {
             >
               <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem] background-design" />
             </div>
-            <Header options={navigation}/>
+            <Header options={navigation} />
             <div className="relative grid grid-cols-1 gap-5 lg:grid-cols-4 sm:grid-cols-2 my-12 -z-10">
               {posts.length > 0 &&
-                posts.map((post: { _id: React.Key; }) => (
+                posts.map((post: { _id: React.Key }) => (
                   <PostCard key={post._id} post={post} postType="news" />
                 ))}
             </div>
@@ -113,7 +113,11 @@ export default function Main({ posts }) {
           <div className="w-full flex flex-col justify-between items-start md:flex-row">
             <div className="w-full h-32 md:w-1/4 md:mb-0">
               <div className="w-full h-full">
-                <Link href="/" className="relative block h-32 w-70" prefetch={false}>
+                <Link
+                  href="/"
+                  className="relative block h-32 w-70"
+                  prefetch={false}
+                >
                   <Image
                     alt={`${WEBSITE_TITLE}'s poster`}
                     src={poster}
@@ -191,7 +195,11 @@ export default function Main({ posts }) {
             </ul>
             <ul className="md:w-1/4 flex flex-wrap items-center mb-6 text-sm font-medium sm:mb-0 ">
               <li>
-                <Link href="/about" className="mr-4 hover:underline md:mr-6" prefetch={false}>
+                <Link
+                  href="/about"
+                  className="mr-4 hover:underline md:mr-6"
+                  prefetch={false}
+                >
                   About
                 </Link>
               </li>
@@ -205,17 +213,29 @@ export default function Main({ posts }) {
                 </Link>
               </li>
               <li>
-                <Link href="/contactus" className="hover:underline" prefetch={false}>
+                <Link
+                  href="/contactus"
+                  className="hover:underline"
+                  prefetch={false}
+                >
                   Contact Us
                 </Link>
               </li>
               <li>
-                <Link href="/disclaimer" className="hover:underline ml-2" prefetch={false}>
+                <Link
+                  href="/disclaimer"
+                  className="hover:underline ml-2"
+                  prefetch={false}
+                >
                   Disclaimer
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="hover:underline ml-2" prefetch={false}>
+                <Link
+                  href="/terms"
+                  className="hover:underline ml-2"
+                  prefetch={false}
+                >
                   Terms of Service
                 </Link>
               </li>
@@ -223,7 +243,11 @@ export default function Main({ posts }) {
           </div>
           <hr className="my-6 border-gray-200 sm:mx-auto lg:my-8" />
           <span className="block text-sm sm:text-center">
-            <Link href={WEBSITE_URL} className="hover:underline" prefetch={false}>
+            <Link
+              href={WEBSITE_URL}
+              className="hover:underline"
+              prefetch={false}
+            >
               © 2023 {WEBSITE_TITLE}™
             </Link>
           </span>

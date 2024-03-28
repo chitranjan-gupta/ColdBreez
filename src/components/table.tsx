@@ -25,7 +25,7 @@ export function Table({ rows }) {
                   </td>
                 ))}
               </tr>
-            )
+            ),
           )}
         </tbody>
         <tfoot>

@@ -10,8 +10,15 @@ export function NavItem({ option }) {
   return (
     <Menu.Item>
       {({ active }) => (
-        <Link href={option.href} prefetch={false} className={`${active ? "bg-violet-500 text-gray-900" : "text-gray-900"
-          } group flex w-full items-center rounded-md px-2 py-2 text-sm`}>{option.name}</Link>
+        <Link
+          href={option.href}
+          prefetch={false}
+          className={`${
+            active ? "bg-violet-500 text-gray-900" : "text-gray-900"
+          } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+        >
+          {option.name}
+        </Link>
       )}
     </Menu.Item>
   );
@@ -40,7 +47,7 @@ function DropDown({ children, options }) {
         >
           <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="px-1 py-1 ">
-              {options.map((option: { name: React.Key; }) => (
+              {options.map((option: { name: React.Key }) => (
                 <NavItem key={option.name} option={option} />
               ))}
             </div>
@@ -61,7 +68,11 @@ function DropDown({ children, options }) {
   );
 }
 
-export default function Header({ children = "", className = "", options = [] }) {
+export default function Header({
+  children = "",
+  className = "",
+  options = [],
+}) {
   return (
     <header
       className={`absolute block top-0 left-0 right-0 w-full z-50 ${className}`}

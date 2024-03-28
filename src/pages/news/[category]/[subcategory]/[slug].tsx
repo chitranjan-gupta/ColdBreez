@@ -130,7 +130,7 @@ const query = groq`*[_type == "post" && slug.current == $slug][0]{
   body
 }`;
 
-export async function getStaticProps(context: { params: { slug?: ""; }; }) {
+export async function getStaticProps(context: { params: { slug?: "" } }) {
   const { slug = "" } = context.params;
   const post = await client.fetch(query, { slug });
   return {
@@ -147,18 +147,20 @@ export async function getStaticPaths() {
       "slug": slug.current,
       "category": categories[0]->title,
       "subcategory": subcategories[0]->title
-    }`
+    }`,
   );
   const paths = [];
-  posts.forEach((post: { category: string; subcategory: string; slug: any; }) => {
-    paths.push({
-      params: {
-        category: post.category.toLowerCase(),
-        subcategory: post.subcategory.toLowerCase(),
-        slug: post.slug,
-      },
-    });
-  });
+  posts.forEach(
+    (post: { category: string; subcategory: string; slug: any }) => {
+      paths.push({
+        params: {
+          category: post.category.toLowerCase(),
+          subcategory: post.subcategory.toLowerCase(),
+          slug: post.slug,
+        },
+      });
+    },
+  );
   return {
     paths: paths,
     fallback: true,

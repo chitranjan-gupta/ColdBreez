@@ -16,7 +16,12 @@ export const ptComponents = {
       }
       return (
         <div className="relative w-full h-96 object-contain">
-          <Image alt={value.asset._ref} loading="lazy" src={urlFor(value).fit("clip").url()} fill={true} />
+          <Image
+            alt={value.asset._ref}
+            loading="lazy"
+            src={urlFor(value).fit("clip").url()}
+            fill={true}
+          />
         </div>
       );
     },
@@ -36,9 +41,7 @@ export const ptComponents = {
         return null;
       }
       const { url } = value;
-      return (
-        <InstaPost url={url} />
-      );
+      return <InstaPost url={url} />;
     },
     twitter: ({ value }) => {
       if (!value) {
@@ -68,5 +71,5 @@ export const ptComponents = {
     blockquote: ({ children }) => (
       <blockquote className="border-l-purple-500">{children}</blockquote>
     ),
-  }
+  },
 } as unknown as PortableTextReactComponents;

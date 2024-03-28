@@ -5,11 +5,4 @@ import facebook from "@/img/coldbreez-facebook.png";
 import twitter from "@/img/coldbreez-twitter.png";
 import threads from "@/img/coldbreez-threads.png";
 
-export {
-  logo,
-  poster,
-  instagram,
-  facebook,
-  twitter,
-  threads
-};
+export { logo, poster, instagram, facebook, twitter, threads };

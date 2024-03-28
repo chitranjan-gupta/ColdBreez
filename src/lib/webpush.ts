@@ -6,9 +6,12 @@ const privateVapidKey = String(process.env.NEXT_PUBLIC_VAPID_PRIVATE_KEY);
 webpush.setVapidDetails(
   "mailto:admin@coldbreez.me",
   publicVapidKey,
-  privateVapidKey
+  privateVapidKey,
 );
 
-export async function push(subscription: webpush.PushSubscription, payload: string | Buffer) {
+export async function push(
+  subscription: webpush.PushSubscription,
+  payload: string | Buffer,
+) {
   await webpush.sendNotification(subscription, payload);
 }

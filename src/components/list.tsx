@@ -8,7 +8,7 @@ export default function List({ property, value }) {
       p
         .split("_")
         .map((a: string) => a.replace(a[0], a[0].toUpperCase()))
-        .join(" ")
+        .join(" "),
     );
   }, []);
   return (

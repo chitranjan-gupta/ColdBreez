@@ -2,7 +2,7 @@ import React from "react";
 import Head from "next/head";
 import { WEBSITE_KEYWORDS } from "@/lib/name";
 /**
- * 
+ *
  * @returns Head tag containing common tags
  */
 export default function Common() {
@@ -11,13 +11,13 @@ export default function Common() {
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta name="robots" content="index, follow" />
-      <meta
-        name="keywords"
-        content={WEBSITE_KEYWORDS}
-      />
+      <meta name="keywords" content={WEBSITE_KEYWORDS} />
       <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
       <meta name="language" content="English" />
-      <meta name="google-site-verification" content="4eb1eN_ax5ch5dCYpluofAZ4e4LuUr5389PWYTxy2Js" />
+      <meta
+        name="google-site-verification"
+        content="4eb1eN_ax5ch5dCYpluofAZ4e4LuUr5389PWYTxy2Js"
+      />
       <link rel="icon" type="image/x-icon" href="/favicon.ico" />
       <link rel="manifest" href="/site.webmanifest" />
       <link

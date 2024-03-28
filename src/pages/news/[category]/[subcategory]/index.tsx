@@ -8,7 +8,7 @@ import { navigation, capitalize } from "@/lib/nav";
 
 export default function Index({ posts }) {
   const [query, setQuery] = useState("");
-  function search() { }
+  function search() {}
   return (
     <>
       <Meta />
@@ -52,7 +52,7 @@ export default function Index({ posts }) {
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-4 sm:grid-cols-2">
           {posts.length > 0 &&
             posts
-              .filter((post: { title: string; }) => {
+              .filter((post: { title: string }) => {
                 if (query == "") {
                   return post;
                 } else if (
@@ -61,22 +61,22 @@ export default function Index({ posts }) {
                   return post;
                 }
               })
-              .map(
-                (post: { _id: React.Key; }) => (
-                  <PostCard key={post._id} post={post} postType="news" />
-                )
-              )}
+              .map((post: { _id: React.Key }) => (
+                <PostCard key={post._id} post={post} postType="news" />
+              ))}
         </div>
       </div>
     </>
   );
 }
 
-export async function getServerSideProps(context: { params: { subcategory: any; }; }) {
+export async function getServerSideProps(context: {
+  params: { subcategory: any };
+}) {
   const { subcategory } = context.params;
   const posts = await client.fetch(groq`
   *[_type == "post" && references(*[_type == "subcategory" && title == "${capitalize(
-    subcategory
+    subcategory,
   )}"]._id)]{
       _id,
       title,

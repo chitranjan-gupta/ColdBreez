@@ -10,17 +10,18 @@ export default function PostCard({ post, postType }) {
     <div
       className="relative flex flex-col justify-between w-full bg-center bg-cover h-96"
       style={{
-        backgroundImage: `url("${post.mainImage
+        backgroundImage: `url("${
+          post.mainImage
             ? urlFor(post.mainImage).width(600).height(600).url()
             : "android-chrome-512x512.png"
-          }")`,
+        }")`,
       }}
       onClick={() =>
         window.open(
           `${WEBSITE_URL}/${postType}/${post.categories[0].toLowerCase()}/${post.subcategories[0].toLowerCase()}/${encodeURIComponent(
-            post.slug.current
+            post.slug.current,
           )}`,
-          "_blank"
+          "_blank",
         )
       }
     >
@@ -83,7 +84,7 @@ export default function PostCard({ post, postType }) {
         </div>
         <Link
           href={`/${postType}/${post.categories[0].toLowerCase()}/${post.subcategories[0].toLowerCase()}/${encodeURIComponent(
-            post.slug.current
+            post.slug.current,
           )}`}
           onClick={(event) => event.stopPropagation()}
           prefetch={false}
