@@ -44,11 +44,11 @@ export function generateSiteMap(posts) {
           <priority>0.64</priority>
       </url>
        ${posts
-         .map(({ _id, slug = "", categories, subcategories }) => {
+         .map(({ _id, slug = "", lastModified = new Date(),categories, subcategories }) => {
            return `
          <url>
              <loc>${WEBSITE_URL}/news/${categories[0].toLowerCase()}/${subcategories[0].toLowerCase()}/${slug.current}</loc>
-             <lastmod>${new Date().toISOString()}</lastmod>
+             <lastmod>${new Date(lastModified).toISOString()}</lastmod>
              <priority>0.80</priority>
          </url>
        `;

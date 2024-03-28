@@ -8,6 +8,7 @@ export async function getServerSideProps({ res }) {
   const posts = await client.fetch(groq`*[_type == "post"] | order(publishedAt desc){
       _id,
       slug,
+      "lastModified": _updatedAt,
       "categories":categories[]->title,
       "subcategories":subcategories[]->title,
   }`);
