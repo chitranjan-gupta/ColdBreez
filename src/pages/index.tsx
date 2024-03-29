@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import groq from "groq";
@@ -9,7 +9,7 @@ import { navigation } from "@/lib/nav";
 import { poster, instagram, threads, twitter, facebook } from "@/img/index";
 import { WEBSITE_TITLE, WEBSITE_URL } from "@/lib/name";
 import Header from "@/components/header";
-import PostCard from "@/components/post";
+import { Post } from "@/components/post";
 
 export default function Main({ posts }) {
   return (
@@ -22,20 +22,20 @@ export default function Main({ posts }) {
               className="absolute inset-x-0 -top-40 -z-20 transform-gpu overflow-hidden blur-3xl sm:-top-80"
               aria-hidden="true"
             >
-              <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem] background-design" />
+              <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#80ff8bfb] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem] background-design" />
             </div>
             <Header options={navigation} />
-            <div className="relative grid grid-cols-1 gap-5 lg:grid-cols-4 sm:grid-cols-2 my-12 -z-10">
+            <div className="relative grid grid-cols-1 gap-5 lg:grid-cols-3 my-12 -z-10 overflow-x-hidden">
               {posts.length > 0 &&
                 posts.map((post: { _id: React.Key }) => (
-                  <PostCard key={post._id} post={post} postType="news" />
+                  <Post key={post._id} post={post} postType="news" showAuthor={true} />
                 ))}
             </div>
             <div
               className="absolute inset-x-0 top-[calc(100%-13rem)] -z-20 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
               aria-hidden="true"
             >
-              <div className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem] background-design" />
+              <div className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#80ff8bfb] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem] background-design" />
             </div>
           </div>
         </div>
@@ -104,7 +104,7 @@ export default function Main({ posts }) {
             className="absolute left-1/2 top-0 -z-10 -translate-x-1/2 blur-3xl xl:-top-6"
             aria-hidden="true"
           >
-            <div className="aspect-[1155/678] w-[72.1875rem] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 background-design" />
+            <div className="aspect-[1155/678] w-[72.1875rem] bg-gradient-to-tr from-[#80ff8bfb] to-[#9089fc] opacity-30 background-design" />
           </div>
         </div>
       </section>
@@ -259,11 +259,12 @@ export default function Main({ posts }) {
 
 export async function getStaticProps() {
   const posts = await client.fetch(groq`
-      *[_type == "post"] | order(publishedAt desc){
+  *[_type == "post"]| order(publishedAt desc)[1...20]{
         _id,
         title,
         description,
         "name": author->name,
+        "authorSlug": author->slug,
         "categories": categories[]->title,
         "subcategories": subcategories[]->title,
         publishedAt,

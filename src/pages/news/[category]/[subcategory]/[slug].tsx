@@ -2,6 +2,7 @@ import React from "react";
 import Script from "next/script";
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import groq from "groq";
 import { PortableText } from "@portabletext/react";
@@ -12,7 +13,7 @@ import { ptComponents } from "@/components/Portable";
 import { navigation } from "@/lib/nav";
 import Header from "@/components/header";
 
-const Post = ({ post }) => {
+const Post = ({ post, posts }) => {
   const router = useRouter();
   if (!post)
     return (
@@ -24,6 +25,7 @@ const Post = ({ post }) => {
     title = "Missing title",
     description = "Missing description",
     name = "Missing name",
+    bio = "Missing Bio",
     categories,
     subcategories,
     publishedAt,
@@ -61,7 +63,7 @@ const Post = ({ post }) => {
         <meta name="og:type" content="article" />
       </Head>
       <Header options={navigation} />
-      <div className="flex flex-row justify-center items-center p-2 sm:px-0 mt-12">
+      <div className="flex flex-row justify-center items-center p-2 sm:px-0 mt-14">
         <article className="prose prose-stone sm:prose-sm lg:prose-xl bg-white">
           <h1 className="">{title}</h1>
           <h4 className=" text-slate-600">{description}</h4>
@@ -79,7 +81,9 @@ const Post = ({ post }) => {
                 </div>
               )}
               <div className="ml-2 flex flex-col items-start justify-around">
-                <p className="font-semibold text-gray-900">{name}</p>
+                <Link href={`/news/author/${post.authorSlug.current.trim().toLowerCase()}`}>
+                  <p className="font-semibold text-gray-900">{name}</p>
+                </Link>
                 <div className="flex flex-col items-start lg:flex-row lg:items-center">
                   {categories && (
                     <p className="text-gray-600">
@@ -94,7 +98,7 @@ const Post = ({ post }) => {
                     </p>
                   )}
                   <span className="hidden lg:block mx-2">.</span>
-                  <time className="text-gray-500">
+                  <time className="text-gray-500" dateTime={new Date(publishedAt).toDateString()}>
                     {new Date(publishedAt).toDateString()}
                   </time>
                 </div>
@@ -114,6 +118,111 @@ const Post = ({ post }) => {
           </div>
         </article>
       </div>
+      <div className="w-full flex flex-col justify-center items-center px-2 md:px-10 mt-10">
+        <div>
+          <div>
+            <div className="relative mt-2 flex items-center gap-x-4 min-w-[360px] md:min-w-[800px]">
+              <Image
+                src={urlFor(authorImage).url()}
+                alt={`${name}'s picture`}
+                width={460}
+                height={460}
+                className="h-20 w-20 rounded-full bg-gray-50"
+              />
+              <div className="text-sm leading-6">
+                <p className="font-semibold text-gray-900">
+                  <Link href={`/news/author/${post.authorSlug.current.trim().toLowerCase()}`} prefetch={false}>
+                    <span className="absolute inset-0" />
+                    {name}
+                  </Link>
+                </p>
+                <p className="text-gray-600">{bio}</p>
+              </div>
+            </div>
+          </div>
+          <span className="font-semibold text-xl sm:text-2xl lg:text-xl xl:text-2xl mb-1">
+            <Link href="/news" prefetch={false}>
+              Latest News :
+            </Link>
+          </span>
+        </div>
+        <div className="ml-3 md:ml-0">
+          <div className="flex flex-row flex-wrap justify-center p-2 overflow-x-scroll overflow-y-hidden -ml-4 sm:ml-0">
+            {posts.map((post) => (
+              <div key={post._id} className="w-full md:w-1/2 lg:w-1/3 mx-7">
+                <div className="max-w-[370px] min-w-[370px] mx-auto mb-10">
+                  <div className="rounded overflow-hidden mb-2 h-[250px] max-h-[250px] min-h-[250px]">
+                    {post.mainImage ? (
+                      <Image
+                        src={urlFor(post.mainImage).url()}
+                        alt="mainImage"
+                        width={300}
+                        height={300}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <Image
+                        src={poster}
+                        alt="mainImage"
+                        width={300}
+                        height={300}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <div className="flex items-center gap-x-4 text-xs">
+                    <time className="text-gray-500" dateTime={new Date(post.publishedAt).toDateString()}>
+                      <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                        {new Date(post.publishedAt).toDateString()}
+                      </span>
+                    </time>
+                    <Link
+                      rel="noopener noreferrer"
+                      href={`/news/${post.categories[0].trim().toLowerCase()}`}
+                      className="text-md font-bold uppercase text-black"
+                      onClick={(event) => event.stopPropagation()}
+                      prefetch={false}
+                    >
+                      {post.categories &&
+                        post.categories.map((category: string) => (
+                          <span key={category} className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20"> {category}</span>
+                        ))}
+                    </Link>
+                    <Link
+                      rel="noopener noreferrer"
+                      href={`/news/${post.categories[0].toLowerCase()}/${post.subcategories[0].toLowerCase()}`}
+                      className="text-md font-bold uppercase text-black"
+                      onClick={(event) => event.stopPropagation()}
+                      prefetch={false}
+                    >
+                      {post.subcategories &&
+                        post.subcategories.map((subcategory: string) => (
+                          <span key={subcategory} className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20"> {subcategory}</span>
+                        ))}
+                    </Link>
+                  </div>
+                  <div className="max-h-[110px] min-h-[110px] overflow-hidden overflow-ellipsis">
+                    <h3>
+                      <Link
+                        href={`/news/${post.categories[0].toLowerCase()}/${post.subcategories[0].toLowerCase()}/${encodeURIComponent(
+                          post.slug.current,
+                        )}`}
+                        className="mt-2 text-lg line-clamp-2 font-semibold leading-6 text-gray-900 group-hover:text-gray-600"
+                        prefetch={false}
+                      >
+                        {post.title}
+                      </Link>
+                    </h3>
+                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-gray-600">
+                      {post.description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </>
   );
 };
@@ -122,6 +231,8 @@ const query = groq`*[_type == "post" && slug.current == $slug][0]{
   title,
   description,
   "name": author->name,
+  "authorSlug": author->slug,
+  "bio": author->bio[0].children[0].text,
   "categories": categories[]->title,
   "subcategories": subcategories[]->title,
   publishedAt,
@@ -133,11 +244,32 @@ const query = groq`*[_type == "post" && slug.current == $slug][0]{
 export async function getStaticProps(context: { params: { slug?: "" } }) {
   const { slug = "" } = context.params;
   const post = await client.fetch(query, { slug });
+  let posts = [];
+  if (post && post.authorSlug && post.authorSlug.current.trim()) {
+    posts = await client.fetch(
+      groq`
+    *[_type == "post" && author->slug.current == $authorSlug][0...4] | order(publishedAt desc){
+      _id,
+      title,
+      description,
+      "name": author->name,
+      "categories": categories[]->title,
+      "subcategories": subcategories[]->title,
+      publishedAt,
+      slug,
+      "authorImage": author->image,
+      mainImage
+    }
+  `,
+      { authorSlug: post.authorSlug.current.trim() },
+    );
+  }
   return {
     props: {
       post,
-      revalidate: 10,
+      posts,
     },
+    revalidate: 10,
   };
 }
 

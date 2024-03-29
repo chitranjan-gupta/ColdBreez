@@ -1,10 +1,11 @@
-import React, { Fragment } from "react";
+import React, { Fragment, ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, Transition } from "@headlessui/react";
 import { Bars3BottomRightIcon } from "@heroicons/react/20/solid";
 import { logo } from "@/img/index";
 import { WEBSITE_TITLE, WEBSITE_URL } from "@/lib/name";
+import type { Navigation } from "@/lib/nav";
 
 export function NavItem({ option }) {
   return (
@@ -13,9 +14,8 @@ export function NavItem({ option }) {
         <Link
           href={option.href}
           prefetch={false}
-          className={`${
-            active ? "bg-violet-500 text-gray-900" : "text-gray-900"
-          } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+          className={`${active ? "bg-violet-500 text-gray-900" : "text-gray-900"
+            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
         >
           {option.name}
         </Link>
@@ -68,11 +68,17 @@ function DropDown({ children, options }) {
   );
 }
 
+type Props = {
+  children?: ReactNode
+  className?: string,
+  options: Navigation[]
+}
+
 export default function Header({
-  children = "",
+  children,
   className = "",
-  options = [],
-}) {
+  options
+}: Props) {
   return (
     <header
       className={`absolute block top-0 left-0 right-0 w-full z-50 ${className}`}

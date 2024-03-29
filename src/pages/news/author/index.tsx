@@ -4,8 +4,10 @@ import Link from "next/link";
 import groq from "groq";
 import { client, urlFor } from "@/lib/sanity";
 import { Pagination } from "@/components/pagination";
+import Header from "@/components/header";
+import { navigation } from "@/lib/nav";
 
-export function Author({ author }) {
+function Author({ author }) {
   return (
     <li key={author._id}>
       <Link href={`/news/author/${author.slug.current}`} prefetch={false}>
@@ -34,9 +36,11 @@ export function Author({ author }) {
 
 export default function Index({ authors }) {
   return (
-    <div className="bg-white overflow-y-scroll md:overflow-hidden">
-      <div className="bg-white py-8">
-        <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:px-8 xl:grid-cols-3">
+    <>
+    <Header options={navigation}/>
+    <div className="bg-white mt-10 overflow-y-scroll md:overflow-hidden">
+      <div className="bg-white py-7">
+        <div className="mx-auto grid max-w-7xl gap-x-5 gap-y-10 px-6 lg:px-8 xl:grid-cols-3">
           <div className="max-w-2xl">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
               Meet our Author
@@ -65,6 +69,7 @@ export default function Index({ authors }) {
       </div>
       <Pagination />
     </div>
+    </>
   );
 }
 
