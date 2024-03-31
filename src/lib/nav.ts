@@ -1,10 +1,10 @@
 import numWords from "num-words";
 
 export type Navigation = {
-  id: number
-  name: string
-  href:string
-}
+  id: number;
+  name: string;
+  href: string;
+};
 
 export const navigation: Navigation[] = [
   { id: 1, name: "Home", href: "/" },
@@ -42,7 +42,15 @@ export function getMonth(n: number) {
   return months[n];
 }
 
-const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const days = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 export function getDay(n: number) {
   return days[n];
 }

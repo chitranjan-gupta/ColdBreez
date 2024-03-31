@@ -3,24 +3,21 @@ import Script from "next/script";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import groq from "groq";
+import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { PortableText } from "@portabletext/react";
+import Error from "@/components/404";
 import { client, urlFor } from "@/lib/sanity";
 import { logo as poster } from "@/img/index";
-import { WEBSITE_NAME, WEBSITE_URL } from "@/lib/name";
+import { WEBSITE_NAME, WEBSITE_URL, WEBSITE_TYPE } from "@/lib/name";
 import { ptComponents } from "@/components/Portable";
 import { navigation } from "@/lib/nav";
 import Header from "@/components/header";
+import { ArticleSchema, ArticleType } from "@/lib/schema";
+import { abs } from "@/lib/utils";
 
 const Post = ({ post, posts }) => {
-  const router = useRouter();
-  if (!post)
-    return (
-      <div className="flex flex-row justify-center items-center w-full h-full text-violet-700">
-        <span className=" text-9xl">404 | Not Found</span>
-      </div>
-    );
+  if (!post) return <Error />;
   const {
     title = "Missing title",
     description = "Missing description",
@@ -56,11 +53,14 @@ const Post = ({ post, posts }) => {
         />
         <meta
           name="og:url"
-          content={`${WEBSITE_URL}/news/${router.query.slug}`}
+          content={`${WEBSITE_URL}/${WEBSITE_TYPE}/${abs(post.categories[0])}/${abs(post.subcategories[0])}/${abs(post.slug.current)}`}
         />
         <meta name="og:site_name" content={WEBSITE_NAME} />
         <meta name="og:locale" content="en_US" />
         <meta name="og:type" content="article" />
+        <script type="application/ld+json">
+          {`${ArticleSchema({ domain: WEBSITE_NAME, url: WEBSITE_URL, type: WEBSITE_TYPE, articleType: ArticleType[WEBSITE_TYPE], post: post })}`}
+        </script>
       </Head>
       <Header options={navigation} />
       <div className="flex flex-row justify-center items-center p-2 sm:px-0 mt-14">
@@ -81,7 +81,9 @@ const Post = ({ post, posts }) => {
                 </div>
               )}
               <div className="ml-2 flex flex-col items-start justify-around">
-                <Link href={`/news/author/${post.authorSlug.current.trim().toLowerCase()}`}>
+                <Link
+                  href={`/${WEBSITE_TYPE}/author/${abs(post.authorSlug.current)}`}
+                >
                   <p className="font-semibold text-gray-900">{name}</p>
                 </Link>
                 <div className="flex flex-col items-start lg:flex-row lg:items-center">
@@ -98,7 +100,10 @@ const Post = ({ post, posts }) => {
                     </p>
                   )}
                   <span className="hidden lg:block mx-2">.</span>
-                  <time className="text-gray-500" dateTime={new Date(publishedAt).toDateString()}>
+                  <time
+                    className="text-gray-500"
+                    dateTime={new Date(publishedAt).toDateString()}
+                  >
                     {new Date(publishedAt).toDateString()}
                   </time>
                 </div>
@@ -131,7 +136,10 @@ const Post = ({ post, posts }) => {
               />
               <div className="text-sm leading-6">
                 <p className="font-semibold text-gray-900">
-                  <Link href={`/news/author/${post.authorSlug.current.trim().toLowerCase()}`} prefetch={false}>
+                  <Link
+                    href={`/${WEBSITE_TYPE}/author/${abs(post.authorSlug.current)}`}
+                    prefetch={false}
+                  >
                     <span className="absolute inset-0" />
                     {name}
                   </Link>
@@ -141,85 +149,109 @@ const Post = ({ post, posts }) => {
             </div>
           </div>
           <span className="font-semibold text-xl sm:text-2xl lg:text-xl xl:text-2xl mb-1">
-            <Link href="/news" prefetch={false}>
-              Latest News :
+            <Link href={`/${WEBSITE_TYPE}`} prefetch={false}>
+              Latest {WEBSITE_TYPE} :
             </Link>
           </span>
         </div>
         <div className="ml-3 md:ml-0">
           <div className="flex flex-row flex-wrap justify-center p-2 overflow-x-scroll overflow-y-hidden -ml-4 sm:ml-0">
-            {posts.map((post) => (
-              <div key={post._id} className="w-full md:w-1/2 lg:w-1/3 mx-7">
-                <div className="max-w-[370px] min-w-[370px] mx-auto mb-10">
-                  <div className="rounded overflow-hidden mb-2 h-[250px] max-h-[250px] min-h-[250px]">
-                    {post.mainImage ? (
-                      <Image
-                        src={urlFor(post.mainImage).url()}
-                        alt="mainImage"
-                        width={300}
-                        height={300}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <Image
-                        src={poster}
-                        alt="mainImage"
-                        width={300}
-                        height={300}
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                  </div>
-                  <div className="flex items-center gap-x-4 text-xs">
-                    <time className="text-gray-500" dateTime={new Date(post.publishedAt).toDateString()}>
-                      <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                        {new Date(post.publishedAt).toDateString()}
-                      </span>
-                    </time>
-                    <Link
-                      rel="noopener noreferrer"
-                      href={`/news/${post.categories[0].trim().toLowerCase()}`}
-                      className="text-md font-bold uppercase text-black"
-                      onClick={(event) => event.stopPropagation()}
-                      prefetch={false}
-                    >
-                      {post.categories &&
-                        post.categories.map((category: string) => (
-                          <span key={category} className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20"> {category}</span>
-                        ))}
-                    </Link>
-                    <Link
-                      rel="noopener noreferrer"
-                      href={`/news/${post.categories[0].toLowerCase()}/${post.subcategories[0].toLowerCase()}`}
-                      className="text-md font-bold uppercase text-black"
-                      onClick={(event) => event.stopPropagation()}
-                      prefetch={false}
-                    >
-                      {post.subcategories &&
-                        post.subcategories.map((subcategory: string) => (
-                          <span key={subcategory} className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20"> {subcategory}</span>
-                        ))}
-                    </Link>
-                  </div>
-                  <div className="max-h-[110px] min-h-[110px] overflow-hidden overflow-ellipsis">
-                    <h3>
+            {posts.map(
+              (post: {
+                _id: React.Key;
+                mainImage: SanityImageSource;
+                title: string;
+                publishedAt: string | Date;
+                categories: string[];
+                subcategories: string[];
+                slug: { current: string };
+                description: string;
+              }) => (
+                <div key={post._id} className="w-full md:w-1/2 lg:w-1/3 mx-7">
+                  <div className="max-w-[370px] min-w-[370px] mx-auto mb-10">
+                    <div className="rounded overflow-hidden mb-2 h-[250px] max-h-[250px] min-h-[250px]">
+                      {post.mainImage ? (
+                        <Image
+                          src={urlFor(post.mainImage).url()}
+                          alt={post.title}
+                          width={300}
+                          height={300}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <Image
+                          src={poster}
+                          alt="Missing Image"
+                          width={300}
+                          height={300}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </div>
+                    <div className="flex items-center gap-x-4 text-xs">
+                      <time
+                        className="text-gray-500"
+                        dateTime={new Date(post.publishedAt).toDateString()}
+                      >
+                        <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                          {new Date(post.publishedAt).toDateString()}
+                        </span>
+                      </time>
                       <Link
-                        href={`/news/${post.categories[0].toLowerCase()}/${post.subcategories[0].toLowerCase()}/${encodeURIComponent(
-                          post.slug.current,
-                        )}`}
-                        className="mt-2 text-lg line-clamp-2 font-semibold leading-6 text-gray-900 group-hover:text-gray-600"
+                        rel="noopener noreferrer"
+                        href={`/${WEBSITE_TYPE}/${abs(post.categories[0])}`}
+                        className="text-md font-bold uppercase text-black"
+                        onClick={(event) => event.stopPropagation()}
                         prefetch={false}
                       >
-                        {post.title}
+                        {post.categories &&
+                          post.categories.map((category: string) => (
+                            <span
+                              key={category}
+                              className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20"
+                            >
+                              {" "}
+                              {category}
+                            </span>
+                          ))}
                       </Link>
-                    </h3>
-                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-gray-600">
-                      {post.description}
-                    </p>
+                      <Link
+                        rel="noopener noreferrer"
+                        href={`/${WEBSITE_TYPE}/${abs(post.categories[0])}/${abs(post.subcategories[0])}`}
+                        className="text-md font-bold uppercase text-black"
+                        onClick={(event) => event.stopPropagation()}
+                        prefetch={false}
+                      >
+                        {post.subcategories &&
+                          post.subcategories.map((subcategory: string) => (
+                            <span
+                              key={subcategory}
+                              className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20"
+                            >
+                              {" "}
+                              {subcategory}
+                            </span>
+                          ))}
+                      </Link>
+                    </div>
+                    <div className="max-h-[110px] min-h-[110px] overflow-hidden overflow-ellipsis">
+                      <h3>
+                        <Link
+                          href={`/${WEBSITE_TYPE}/${abs(post.categories[0])}/${abs(post.subcategories[0])}/${abs(post.slug.current)}`}
+                          className="mt-2 text-lg line-clamp-2 font-semibold leading-6 text-gray-900 group-hover:text-gray-600"
+                          prefetch={false}
+                        >
+                          {post.title}
+                        </Link>
+                      </h3>
+                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-gray-600">
+                        {post.description}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ),
+            )}
           </div>
         </div>
       </div>
@@ -236,8 +268,10 @@ const query = groq`*[_type == "post" && slug.current == $slug][0]{
   "categories": categories[]->title,
   "subcategories": subcategories[]->title,
   publishedAt,
+  "modifiedAt": _updatedAt,
   "authorImage": author->image,
   mainImage,
+  slug,
   body
 }`;
 

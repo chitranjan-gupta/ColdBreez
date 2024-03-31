@@ -37,38 +37,38 @@ function Author({ author }) {
 export default function Index({ authors }) {
   return (
     <>
-    <Header options={navigation}/>
-    <div className="bg-white mt-10 overflow-y-scroll md:overflow-hidden">
-      <div className="bg-white py-7">
-        <div className="mx-auto grid max-w-7xl gap-x-5 gap-y-10 px-6 lg:px-8 xl:grid-cols-3">
-          <div className="max-w-2xl">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              Meet our Author
-            </h2>
-            <p className="mt-6 text-lg leading-8 text-gray-600">
-              Welcome to the &quot;Meet Our Author&quot; page, where you can learn more
-              about the brilliant mind behind our captivating stories. Our
-              author brings a unique perspective to their work, weaving
-              intricate narratives that transport readers to new worlds and
-              evoke a myriad of emotions. With a passion for storytelling and a
-              dedication to craftmanship, our author&apos;s words provoke to inspire,
-              entertain and provoke thought. Join us on a journey discover the
-              creative genius behind the pages, and delve into the imagination
-              of our extraordinary author.
-            </p>
+      <Header options={navigation} />
+      <div className="bg-white mt-10 overflow-y-scroll md:overflow-hidden">
+        <div className="bg-white py-7">
+          <div className="mx-auto grid max-w-7xl gap-x-5 gap-y-10 px-6 lg:px-8 xl:grid-cols-3">
+            <div className="max-w-2xl">
+              <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                Meet our Author
+              </h2>
+              <p className="mt-6 text-lg leading-8 text-gray-600">
+                Welcome to the &quot;Meet Our Author&quot; page, where you can
+                learn more about the brilliant mind behind our captivating
+                stories. Our author brings a unique perspective to their work,
+                weaving intricate narratives that transport readers to new
+                worlds and evoke a myriad of emotions. With a passion for
+                storytelling and a dedication to craftmanship, our author&apos;s
+                words provoke to inspire, entertain and provoke thought. Join us
+                on a journey discover the creative genius behind the pages, and
+                delve into the imagination of our extraordinary author.
+              </p>
+            </div>
+            <ul
+              role="list"
+              className="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2"
+            >
+              {authors.map((author: { _id: React.Key }) => (
+                <Author key={author._id} author={author} />
+              ))}
+            </ul>
           </div>
-          <ul
-            role="list"
-            className="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2"
-          >
-            {authors.map((author: { _id: React.Key }) => (
-              <Author key={author._id} author={author} />
-            ))}
-          </ul>
         </div>
+        <Pagination />
       </div>
-      <Pagination />
-    </div>
     </>
   );
 }

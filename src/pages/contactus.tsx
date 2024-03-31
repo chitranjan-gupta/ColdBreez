@@ -15,7 +15,7 @@ export default function Example() {
   return (
     <>
       <Head>
-        <title>{WEBSITE_TITLE} - Contact Us</title>
+        <title>{`${WEBSITE_TITLE} - Contact Us`}</title>
         <meta name="description" content={`${WEBSITE_TITLE} - Contact Us`} />
       </Head>
       <div className="isolate bg-white px-6 py-10 sm:py-10 lg:px-4">

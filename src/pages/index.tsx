@@ -1,4 +1,5 @@
 import React from "react";
+import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import groq from "groq";
@@ -10,11 +11,21 @@ import { poster, instagram, threads, twitter, facebook } from "@/img/index";
 import { WEBSITE_TITLE, WEBSITE_URL } from "@/lib/name";
 import Header from "@/components/header";
 import { Post } from "@/components/post";
+import { BreadcrumbSchema, SearchBoxSchema } from "@/lib/schema";
+import { Breadcrumbs, WEBSITE_NAME, WEBSITE_TYPE } from "@/lib/name";
 
 export default function Main({ posts }) {
   return (
     <>
       <Meta />
+      <Head>
+        <script type="application/ld+json">
+          {`${BreadcrumbSchema(Breadcrumbs)}`}
+        </script>
+        <script type="application/ld+json">
+          {`${SearchBoxSchema({ domain: WEBSITE_NAME, url: WEBSITE_URL, type: WEBSITE_TYPE })}`}
+        </script>
+      </Head>
       <section id="hero">
         <div className="bg-white">
           <div className="relative isolate px-6 pt-14 lg:px-8">
@@ -28,7 +39,12 @@ export default function Main({ posts }) {
             <div className="relative grid grid-cols-1 gap-5 lg:grid-cols-3 my-12 -z-10 overflow-x-hidden">
               {posts.length > 0 &&
                 posts.map((post: { _id: React.Key }) => (
-                  <Post key={post._id} post={post} postType="news" showAuthor={true} />
+                  <Post
+                    key={post._id}
+                    post={post}
+                    postType="news"
+                    showAuthor={true}
+                  />
                 ))}
             </div>
             <div
@@ -259,7 +275,7 @@ export default function Main({ posts }) {
 
 export async function getStaticProps() {
   const posts = await client.fetch(groq`
-  *[_type == "post"]| order(publishedAt desc)[1...20]{
+  *[_type == "post"] | order(publishedAt desc)[0...20]{
         _id,
         title,
         description,

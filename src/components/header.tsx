@@ -14,8 +14,9 @@ export function NavItem({ option }) {
         <Link
           href={option.href}
           prefetch={false}
-          className={`${active ? "bg-violet-500 text-gray-900" : "text-gray-900"
-            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+          className={`${
+            active ? "bg-violet-500 text-gray-900" : "text-gray-900"
+          } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
         >
           {option.name}
         </Link>
@@ -69,16 +70,12 @@ function DropDown({ children, options }) {
 }
 
 type Props = {
-  children?: ReactNode
-  className?: string,
-  options: Navigation[]
-}
+  children?: ReactNode;
+  className?: string;
+  options: Navigation[];
+};
 
-export default function Header({
-  children,
-  className = "",
-  options
-}: Props) {
+export default function Header({ children, className = "", options }: Props) {
   return (
     <header
       className={`absolute block top-0 left-0 right-0 w-full z-50 ${className}`}
