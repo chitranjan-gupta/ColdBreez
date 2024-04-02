@@ -72,7 +72,7 @@ export function ArticleSchema({
     "headline": "${post.title}",
     "description": "${post.description}",
     "image": [
-      "${post.mainImage ? urlFor(post.mainImage).url() : `${url}/${poster.src}`}"
+      "${post.mainImage ? urlFor(post.mainImage).url() : `${url}${poster.src}`}"
     ],  
     "author": {
       "@type": "Person",
@@ -84,7 +84,7 @@ export function ArticleSchema({
       "name": "${domain}",
       "logo": {
         "@type": "ImageObject",
-        "url": "${url}/${poster.src}"
+        "url": "${url}${poster.src}"
       }
     },
     "datePublished": "${new Date(post.publishedAt)}",
