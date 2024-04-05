@@ -18,6 +18,7 @@ export default function Common() {
         name="google-site-verification"
         content="4eb1eN_ax5ch5dCYpluofAZ4e4LuUr5389PWYTxy2Js"
       />
+      <meta name="monetag" content="7481950218d5d89759211425b4bffe8e"></meta>
       <link rel="icon" type="image/x-icon" href="/favicon.ico" />
       <link rel="manifest" href="/site.webmanifest" />
       <link
