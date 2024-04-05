@@ -12,7 +12,7 @@ export default async function registerServiceWorker() {
       installed = registrations.some(function (registers) {
         return (
           registers.active &&
-          registers.active.scriptURL == `${window.location.origin}/sw.js`
+          registers.active.scriptURL == `${window.location.origin}/serviceworker.js`
         );
       });
     }
@@ -23,7 +23,7 @@ export default async function registerServiceWorker() {
     console.log("Service worker starts loading");
     const publicVapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
     console.log("Registering Service Worker");
-    const registration = await navigator.serviceWorker.register("/sw.js", {
+    const registration = await navigator.serviceWorker.register("/serviceworker.js", {
       scope: "/",
     });
     registration.addEventListener("updatefound", (event) => {

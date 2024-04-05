@@ -4,11 +4,7 @@ import Head from "next/head";
 export default function Ads() {
   return (
     <Head>
-      <script id="propellerAds">
-        {
-        `(function(d,z,s){s.src='https://'+d+'/401/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('gloaphoo.net',7311993,document.createElement('script'))
-        `
-        }</script>
+      <script src="https://alwingulla.com/88/tag.min.js" data-zone="56402" async data-cfasync="false" />
     </Head>
   );
 }
