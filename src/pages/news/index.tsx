@@ -1,17 +1,22 @@
 import React, { useState } from "react";
 import groq from "groq";
+import Head from "next/head";
 import Link from "next/link";
 import { client } from "@/lib/sanity";
 import Meta from "@/components/meta";
 import Header from "@/components/header";
 import { navigation } from "@/lib/nav";
 import { Posts } from "@/components/posts";
+import { WEBSITE_TITLE, WEBSITE_TYPE } from "@/lib/name";
 
 export default function Index({ posts }) {
   const [query, setQuery] = useState("");
   return (
     <>
       <Meta />
+      <Head>
+        <title>{`${WEBSITE_TITLE} - ${WEBSITE_TYPE}`}</title>
+      </Head>
       <Header options={navigation}>
         <Link href="/news/author" prefetch={false}>
           Authors

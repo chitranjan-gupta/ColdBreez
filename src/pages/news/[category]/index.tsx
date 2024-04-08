@@ -1,17 +1,24 @@
 import React, { useState } from "react";
 import groq from "groq";
+import Head from "next/head";
+import { useRouter } from "next/router";
 import { client } from "@/lib/sanity";
 import Meta from "@/components/meta";
 import Header from "@/components/header";
 import { Posts } from "@/components/posts";
 import { navigation } from "@/lib/nav";
 import { abs } from "@/lib/utils";
+import { WEBSITE_TITLE } from "@/lib/name";
 
 export default function Index({ posts }) {
   const [query, setQuery] = useState<string>("");
+  const router = useRouter();
   return (
     <>
       <Meta />
+      <Head>
+        <title>{`${WEBSITE_TITLE} - ${router.query.category}`}</title>
+      </Head>
       <Header options={navigation} />
       <Posts posts={posts} query={query} setQuery={setQuery} />
     </>

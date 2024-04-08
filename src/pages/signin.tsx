@@ -1,4 +1,5 @@
 import React from "react";
+import type { FormEvent } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
@@ -6,10 +7,20 @@ import { logo as poster } from "@/img/index";
 import { WEBSITE_TITLE } from "@/lib/name";
 
 export default function Sign_In() {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const response = await fetch("/api/auth/login", {
+      method: "POST",
+      body: formData,
+    });
+    const data = await response.json();
+  }
   return (
     <>
       <Head>
-        <title>Sign In - {WEBSITE_TITLE}</title>
+        <title>{`Sign In - ${WEBSITE_TITLE}`}</title>
         <meta name="description" content={`Sign In on ${WEBSITE_TITLE}`} />
       </Head>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -31,7 +42,7 @@ export default function Sign_In() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" action="/api" method="POST">
+          <form className="space-y-6" onSubmit={onSubmit}>
             <div>
               <label
                 htmlFor="email"
@@ -92,7 +103,7 @@ export default function Sign_In() {
           </form>
 
           <p className="mt-10 text-center text-sm text-gray-500">
-            Not a member?
+            Not a member?{" "}
             <Link
               href="/signup"
               className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"

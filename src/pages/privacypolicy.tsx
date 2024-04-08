@@ -9,7 +9,7 @@ export default function Privacy() {
   return (
     <>
       <Head>
-        <title>{WEBSITE_TITLE} - Privacy Policy</title>
+        <title>{`${WEBSITE_TITLE} - Privacy Policy`}</title>
         <meta
           name="description"
           content={`${WEBSITE_TITLE} - Privacy Policy`}

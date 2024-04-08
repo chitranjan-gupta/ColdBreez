@@ -124,6 +124,7 @@ export default function Main({ posts }) {
           </div>
         </div>
       </section>
+      <h1 className="w-full text-center font-bold text-xl">{`${WEBSITE_TITLE}`}</h1>
       <footer className="bg-white rounded-lg shadow m-4">
         <div className="w-full mx-auto p-4 md:py-8">
           <div className="w-full flex flex-col justify-between items-start md:flex-row">
@@ -264,7 +265,7 @@ export default function Main({ posts }) {
               className="hover:underline"
               prefetch={false}
             >
-              © 2023 {WEBSITE_TITLE}™
+              © 2024 {WEBSITE_TITLE}™
             </Link>
           </span>
         </div>

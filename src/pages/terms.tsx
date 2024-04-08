@@ -9,7 +9,7 @@ export default function Terms() {
   return (
     <>
       <Head>
-        <title>{WEBSITE_TITLE} - Terms of Service</title>
+        <title>{`${WEBSITE_TITLE} - Terms of Service`}</title>
         <meta
           name="description"
           content={`${WEBSITE_TITLE} - Terms of Service`}
@@ -21,8 +21,8 @@ export default function Terms() {
       >
         <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem] background-design" />
       </div>
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <div className="flex flex-row justify-center items-center w-full h-16">
+      <div className="mt-5 flex flex-row justify-center items-center">
+        <div className="flex flex-row justify-center items-center h-16">
           <Link href="/" prefetch={false}>
             <Image
               alt={`${WEBSITE_TITLE}'s poster`}
@@ -31,6 +31,9 @@ export default function Terms() {
               height={100}
             />
           </Link>
+        </div>
+        <div>
+          <h1 className="font-bold text-xl">{`${WEBSITE_TITLE} - Terms of Service`}</h1>
         </div>
       </div>
       <div className="flex flex-col justify-between items-start p-3">
@@ -43,7 +46,7 @@ export default function Terms() {
           the Website, you agree to be bound by these Terms. If you do not agree
           to these Terms, please do not use the Website.
         </span>
-        <div>
+        <div className="p-5">
           <li className="list-decimal">
             <strong>Introduction</strong>
             <br />

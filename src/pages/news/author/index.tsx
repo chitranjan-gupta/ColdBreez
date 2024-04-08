@@ -1,11 +1,13 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import Head from "next/head";
 import groq from "groq";
 import { client, urlFor } from "@/lib/sanity";
 import { Pagination } from "@/components/pagination";
 import Header from "@/components/header";
 import { navigation } from "@/lib/nav";
+import { WEBSITE_TITLE } from "@/lib/name";
 
 function Author({ author }) {
   return (
@@ -37,6 +39,9 @@ function Author({ author }) {
 export default function Index({ authors }) {
   return (
     <>
+      <Head>
+        <title>{`${WEBSITE_TITLE} - authors`}</title>
+      </Head>
       <Header options={navigation} />
       <div className="bg-white mt-10 overflow-y-scroll md:overflow-hidden">
         <div className="bg-white py-7">

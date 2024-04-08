@@ -9,7 +9,7 @@ export default function About() {
   return (
     <>
       <Head>
-        <title>{WEBSITE_TITLE} - About Us</title>
+        <title>{`${WEBSITE_TITLE} - About Us`}</title>
         <meta name="description" content={`${WEBSITE_TITLE} - About Us`} />
       </Head>
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(45rem_50rem_at_top,theme(colors.indigo.100),white)] opacity-20" />

@@ -1,21 +1,31 @@
 import React from "react";
+import type { FormEvent } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 import { logo as poster } from "@/img/index";
-import { WEBSITE_TITLE, WEBSITE_URL } from "@/lib/name";
+import { WEBSITE_TITLE, WEBSITE_TYPE, WEBSITE_URL } from "@/lib/name";
 
 export default function Sign_Up() {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const response = await fetch("/api/user/register", {
+      method: "POST",
+      body: formData,
+    });
+    const data = await response.json();
+  }
   return (
     <>
       <Head>
-        <title>Sign Up - {WEBSITE_TITLE}</title>
+        <title>{`Sign Up - ${WEBSITE_TITLE}`}</title>
         <meta name="description" content={`Sign Up on ${WEBSITE_TITLE}`} />
       </Head>
       <form
         className="flex flex-col justify-center items-center mt-3 p-5"
-        method="POST"
-        action="/api"
+        onSubmit={onSubmit}
       >
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <div className="flex flex-row justify-center items-center w-full h-16">
@@ -54,7 +64,7 @@ export default function Sign_Up() {
                 <div className="mt-2">
                   <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
                     <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">
-                      {WEBSITE_URL}/blog/author/
+                      {WEBSITE_URL}/{WEBSITE_TYPE}/author/
                     </span>
                     <input
                       type="text"
@@ -63,6 +73,7 @@ export default function Sign_Up() {
                       autoComplete="username"
                       className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                       placeholder="bablu"
+                      required
                     />
                   </div>
                 </div>
@@ -161,6 +172,7 @@ export default function Sign_Up() {
                     name="first-name"
                     id="first-name"
                     autoComplete="given-name"
+                    required
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
@@ -197,6 +209,26 @@ export default function Sign_Up() {
                     name="email"
                     type="email"
                     autoComplete="email"
+                    required
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-4">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  Password
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="password"
+                    required
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>

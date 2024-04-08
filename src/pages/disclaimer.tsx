@@ -1,13 +1,15 @@
 import React from "react";
 import Head from "next/head";
 import Link from "next/link";
+import Image from "next/image";
 import { WEBSITE_TITLE } from "@/lib/name";
+import { logo as poster } from "@/img/index";
 
 export default function Disclaimer() {
   return (
     <>
       <Head>
-        <title>{WEBSITE_TITLE} - Disclaimer</title>
+        <title>{`${WEBSITE_TITLE} - Disclaimer`}</title>
         <meta name="description" content={`${WEBSITE_TITLE} - Disclaimer`} />
       </Head>
       <div
@@ -17,22 +19,32 @@ export default function Disclaimer() {
         <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem] background-design" />
       </div>
       <div className="p-5 flex flex-col justify-between items-start">
-        <div>
-          <h1>Disclaimer for {WEBSITE_TITLE}.</h1>
-          <li>
-            <strong>
-              Disclaimer for{" "}
-              <Link href="/" prefetch={false}>
-                {WEBSITE_TITLE}
-              </Link>
-            </strong>
-          </li>
-          <li>
-            <strong>
-              All the information on this website - {WEBSITE_TITLE} - is
-              published in good faith and for general information purposes only.
-            </strong>
-          </li>
+        <div className="w-full">
+          <div className="flex flex-row justify-center items-center w-full">
+            <h1 className="text-xl font-bold">
+              Disclaimer for {WEBSITE_TITLE}
+            </h1>
+            <Link href="/" prefetch={false}>
+              <Image
+                src={poster}
+                alt={`${WEBSITE_TITLE}'s poster`}
+                width={200}
+                height={200}
+              />
+            </Link>
+          </div>
+          <ul>
+            <li>
+              <strong>{`Disclaimer for ${WEBSITE_TITLE}`}</strong>
+            </li>
+            <li>
+              <strong>
+                All the information on this website - {WEBSITE_TITLE} - is
+                published in good faith and for general information purposes
+                only.
+              </strong>
+            </li>
+          </ul>
         </div>
         {WEBSITE_TITLE} does not make any warranties about the completeness,
         reliability, and accuracy of this information. Any action you take upon
