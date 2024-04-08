@@ -13,9 +13,7 @@ const UserController = async (req: Request, res: Response) => {
       switch (url.pathname) {
         case "/api/user": {
           return new Promise<void>((resolve) => {
-            res
-              .status(200)
-              .json({ message: "OK" });
+            res.status(200).json({ message: "OK" });
             res.end();
             return resolve();
           });
@@ -42,9 +40,7 @@ const UserController = async (req: Request, res: Response) => {
         }
         default: {
           return new Promise<void>((resolve) => {
-            res
-              .status(200)
-              .json({ message: "OK Default" });
+            res.status(200).json({ message: "OK Default" });
             res.end();
             return resolve();
           });

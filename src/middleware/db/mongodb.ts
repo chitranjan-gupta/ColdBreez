@@ -12,11 +12,9 @@ async function mongodbConnect(mongodb_url: string) {
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose
-      .connect(mongodb_url)
-      .then((mongoose) => {
-        return mongoose;
-      });
+    cached.promise = mongoose.connect(mongodb_url).then((mongoose) => {
+      return mongoose;
+    });
   }
 
   cached.conn = await cached.promise;

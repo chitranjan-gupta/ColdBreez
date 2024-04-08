@@ -1,3 +1,3 @@
-// import { AuthController } from "middleware/auth";
+import { AuthController } from "middleware/auth";
 
-// export default AuthController;
+export default AuthController;

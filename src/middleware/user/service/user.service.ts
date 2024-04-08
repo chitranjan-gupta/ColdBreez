@@ -3,7 +3,7 @@ import { User } from "../model";
 
 export default class UserService {
   private logger;
-  
+
   constructor(logger) {
     this.logger = logger;
   }
@@ -14,19 +14,22 @@ export default class UserService {
   }
 
   async updateRefreshTokenByEmail(email: string, refresh_token: string) {
-    const hashedToken = await this.hashData(refresh_token);
     await User.findOneAndUpdate(
       { email: email.toLowerCase() },
-      { $push: { tokens: { refresh_token: hashedToken} } },
+      { $push: { tokens: { refresh_token: refresh_token } } },
     );
     return;
   }
 
-  async replaceRefreshTokenByEmail(email: string, refresh_token: string) {
-    const hashedToken = await this.hashData(refresh_token);
-    User.findOneAndUpdate(
-      { email: email.toLowerCase() },
-      { $push: { refresh_token: hashedToken } },
+  async replaceRefreshTokenByEmail(
+    email: string,
+    old_refresh_token: string,
+    refresh_token: string,
+  ) {
+    const newhashedToken = refresh_token ? refresh_token : null;
+    await User.findOneAndUpdate(
+      { email: email.toLowerCase(), "tokens.refresh_token": old_refresh_token },
+      { $set: { "tokens.$.refresh_token": newhashedToken } },
     );
     return;
   }

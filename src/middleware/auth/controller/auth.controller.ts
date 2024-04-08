@@ -23,7 +23,11 @@ const AuthController = async (req: Request, res: Response) => {
         case "/api/auth/login": {
           await mongodbConnect(configService.get().db.mongodb_url);
           const usersService = new UserService(logger);
-          const authService = new AuthService(usersService, configService, logger);
+          const authService = new AuthService(
+            usersService,
+            configService,
+            logger,
+          );
           const response = await authService.validateUserByPassword(req.body);
           if (response.httperror && response.httperror.statusCode) {
             return new Promise<void>((resolve) => {
@@ -51,11 +55,17 @@ const AuthController = async (req: Request, res: Response) => {
             });
           }
         }
-        case "/api/auth/refresh":{
+        case "/api/auth/refresh": {
           await mongodbConnect(configService.get().db.mongodb_url);
           const usersService = new UserService(logger);
-          const authService = new AuthService(usersService, configService, logger);
-          const response = await authService.validateRefreshToken((req as any).user);
+          const authService = new AuthService(
+            usersService,
+            configService,
+            logger,
+          );
+          const response = await authService.validateRefreshToken(
+            (req as any).user,
+          );
           if (response.httperror && response.httperror.statusCode) {
             return new Promise<void>((resolve) => {
               res

@@ -1,3 +1,3 @@
-// import { UserController } from "middleware/user";
+import { UserController } from "middleware/user";
 
-// export default UserController;
+export default UserController;

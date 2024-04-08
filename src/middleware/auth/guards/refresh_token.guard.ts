@@ -30,14 +30,15 @@ const RefreshTokenGuard = (handler, method) => {
         configService.get().auth.refresh_token_secret,
       ) as jwt.JwtPayload;
       let user = {
-        userId: verifyRefreshToken._id,
+        userId: verifyRefreshToken.userId,
         email: verifyRefreshToken.email,
         refresh_token: refresh_token,
       };
       (req as any).user = user;
       return handler(req, res);
     } catch (err) {
-      let statusCode = 500, message = "Error In Server Access";
+      let statusCode = 500,
+        message = "Error In Server Access";
       if (err instanceof jwt.TokenExpiredError) {
         statusCode = 401;
         message = "TOKEN_EXPIRED";
@@ -50,9 +51,9 @@ const RefreshTokenGuard = (handler, method) => {
       }
       logger.error(err);
       return new Promise<void>((resolve) => {
-          res.status(statusCode).json({ message: message });
-          res.end();
-          return resolve();
+        res.status(statusCode).json({ message: message });
+        res.end();
+        return resolve();
       });
     }
   };

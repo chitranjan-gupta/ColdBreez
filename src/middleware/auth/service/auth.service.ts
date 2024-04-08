@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 export default class AuthService {
@@ -55,27 +54,43 @@ export default class AuthService {
   }
 
   public async validateRefreshToken(payload) {
-    const user = await this.usersService.findUserBySelect({ email: payload.email, "tokens.refresh_token": payload.refresh_token });
-    if(!user){
+    const user = await this.usersService.findUserBySelect({
+      email: payload.email,
+      "tokens.refresh_token": payload.refresh_token,
+    });
+    if (!user) {
       return {
-        statusCode: 401,
-        message: "Unauthorized"
-      }
-    }  
+        httperror: {
+          statusCode: 401,
+          message: "Unauthorized",
+        },
+        tokens: {
+          access_token: undefined,
+          refresh_token: undefined,
+        },
+      };
+    }
     delete user.password;
-    this.refreshToken(user);   
-    return user;
+    const data = await this.refreshToken(user, payload.refresh_token);
+    return {
+      ...data,
+      httperror: {
+        statusCode: undefined,
+        message: undefined,
+      },
+    };
   }
 
   public async logout(user) {
     const { id, refresh_token, email } = user;
-    await this.usersService.updateRefreshTokenByEmail(email, null);
+    await this.usersService.replaceRefreshTokenByEmail(email, null);
   }
 
-  public async refreshToken(user) {
+  public async refreshToken(user, old_refresh_token) {
     const data = await this.createToken(user);
     await this.usersService.replaceRefreshTokenByEmail(
       user.email,
+      old_refresh_token,
       data.tokens.refresh_token,
     );
     return data;

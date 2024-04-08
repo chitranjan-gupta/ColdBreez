@@ -25,14 +25,19 @@ const AccessTokenGuard = (handler, method) => {
           return resolve();
         });
       }
-      const data = jwt.verify(access_token, configService.get().auth.access_token_secret);
+      const data = jwt.verify(
+        access_token,
+        configService.get().auth.access_token_secret,
+      );
       let user = {
-        userId: (data as any)._id
+        userId: (data as any).userId,
+        email: (data as any).email,
       };
       (req as any).user = user;
       return handler(req, res);
     } catch (err) {
-      let statusCode = 500, message = "Error In Server Access";
+      let statusCode = 500,
+        message = "Error In Server Access";
       if (err instanceof jwt.TokenExpiredError) {
         statusCode = 401;
         message = "TOKEN_EXPIRED";
@@ -45,9 +50,9 @@ const AccessTokenGuard = (handler, method) => {
       }
       logger.error(err);
       return new Promise<void>((resolve) => {
-          res.status(statusCode).json({ message: message });
-          res.end();
-          return resolve();
+        res.status(statusCode).json({ message: message });
+        res.end();
+        return resolve();
       });
     }
   };
