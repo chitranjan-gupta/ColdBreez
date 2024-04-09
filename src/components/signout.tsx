@@ -5,6 +5,7 @@ export default function SignOut() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<number>(401);
   useEffect(() => {
     async function signout() {
       setIsLoading(true);
@@ -18,6 +19,7 @@ export default function SignOut() {
         });
         const data = await response.json();
         if (!response.ok) {
+          setErrorCode(response.status);
           throw new Error(data.message);
         }
         if (response.ok) {
@@ -37,7 +39,7 @@ export default function SignOut() {
   return (
     <>
       {isLoading && <p>Signing out...</p>}
-      {error && <UnAuthorized error={error} />}
+      {error && <UnAuthorized error={error} errorCode={errorCode}/>}
     </>
   );
 }
