@@ -39,11 +39,11 @@ export default class UserService {
     return;
   }
 
-  async removeRefreshTokenByEmail(email: string, refresh_token: string) {
-    if (refresh_token) {
+  async removeRefreshTokenByEmail(email: string, old_refresh_token: string) {
+    if (old_refresh_token) {
       await User.findOneAndUpdate(
-        { email: email.toLowerCase(), "tokens.refresh_token": refresh_token },
-        { $pull: { tokens: { refresh_token: refresh_token } } },
+        { email: email.toLowerCase() },
+        { $pull: { tokens: { refresh_token: old_refresh_token } } },
       );
     }
     return;

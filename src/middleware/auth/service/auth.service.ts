@@ -98,8 +98,10 @@ export default class AuthService {
         },
       };
     }
-    const { refresh_token, email } = payload;
-    await this.usersService.removeRefreshTokenByEmail(email, refresh_token);
+    await this.usersService.removeRefreshTokenByEmail(
+      payload.email,
+      payload.refresh_token,
+    );
     return {
       tokens: {
         access_token: null,

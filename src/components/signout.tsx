@@ -39,7 +39,7 @@ export default function SignOut() {
   return (
     <>
       {isLoading && <p>Signing out...</p>}
-      {error && <UnAuthorized error={error} errorCode={errorCode}/>}
+      {error && <UnAuthorized error={error} errorCode={errorCode} />}
     </>
   );
 }

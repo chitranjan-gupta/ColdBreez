@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import type { FormEvent } from "react";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
@@ -7,6 +8,7 @@ import { logo as poster } from "@/img/index";
 import { WEBSITE_TITLE, WEBSITE_TYPE, WEBSITE_URL } from "@/lib/name";
 
 export default function Sign_Up() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -40,7 +42,10 @@ export default function Sign_Up() {
       if (!response.ok) {
         throw new Error(data.message);
       }
-      console.log(data);
+      if (response.ok) {
+        router.push("/signin");
+        console.log(data);
+      }
     } catch (error) {
       // Capture the error message to display to the user
       setError(error.message);
