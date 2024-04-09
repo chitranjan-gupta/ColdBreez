@@ -92,6 +92,41 @@ const AuthController = async (req: Request, res: Response) => {
             });
           }
         }
+        case "/api/auth/logout": {
+          await mongodbConnect(configService.get().db.mongodb_url);
+          const usersService = new UserService(logger);
+          const authService = new AuthService(
+            usersService,
+            configService,
+            logger,
+          );
+          const response = await authService.logout((req as any).user);
+          if (response.httperror && response.httperror.statusCode) {
+            return new Promise<void>((resolve) => {
+              res
+                .status(response.httperror.statusCode)
+                .json({ message: response.httperror.message });
+              res.end();
+              return resolve();
+            });
+          } else {
+            const cookies = new Cookies(req, res);
+            cookies.set("access_token", response.tokens.access_token, {
+              httpOnly: true,
+              sameSite: "lax",
+            });
+            cookies.set("refresh_token", response.tokens.refresh_token, {
+              httpOnly: true,
+              sameSite: "lax",
+            });
+            delete response.httperror;
+            return new Promise<void>((resolve) => {
+              res.status(200).json(response);
+              res.end();
+              return resolve();
+            });
+          }
+        }
         default: {
           return new Promise<void>((resolve) => {
             res.status(401).json({ message: "Unauthorized Default" });

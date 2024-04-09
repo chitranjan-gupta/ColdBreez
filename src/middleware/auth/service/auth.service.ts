@@ -81,9 +81,31 @@ export default class AuthService {
     };
   }
 
-  public async logout(user) {
-    const { id, refresh_token, email } = user;
-    await this.usersService.replaceRefreshTokenByEmail(email, null);
+  public async logout(payload) {
+    const user = await this.usersService.findUserBySelect({
+      email: payload.email,
+      "tokens.refresh_token": payload.refresh_token,
+    });
+    if (!user) {
+      return {
+        httperror: {
+          statusCode: 401,
+          message: "Unauthorized",
+        },
+        tokens: {
+          access_token: undefined,
+          refresh_token: undefined,
+        },
+      };
+    }
+    const { refresh_token, email } = payload;
+    await this.usersService.removeRefreshTokenByEmail(email, refresh_token);
+    return {
+      tokens: {
+        access_token: null,
+        refresh_token: null,
+      },
+    };
   }
 
   public async refreshToken(user, old_refresh_token) {

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/router";
 import type { FormEvent } from "react";
 import Head from "next/head";
 import Link from "next/link";
@@ -7,15 +8,43 @@ import { logo as poster } from "@/img/index";
 import { WEBSITE_TITLE } from "@/lib/name";
 
 export default function Sign_In() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
-    const formData = new FormData(event.currentTarget);
-    const response = await fetch("/api/auth/login", {
-      method: "POST",
-      body: formData,
-    });
-    const data = await response.json();
+    setIsLoading(true);
+    setError(null); // Clear previous errors when a new request starts
+    try {
+      const formData = new FormData(event.currentTarget);
+      const jsonData = (function (formData) {
+        const json = {};
+        json["email"] = formData.get("email").toString();
+        json["password"] = formData.get("password").toString();
+        return JSON.stringify(json);
+      })(formData);
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        body: jsonData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+      if (response.ok) {
+        router.push("/dashboard");
+        console.log(data);
+      }
+    } catch (error) {
+      // Capture the error message to display to the user
+      setError(error.message);
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   }
   return (
     <>
@@ -85,7 +114,7 @@ export default function Sign_In() {
                   id="password"
                   name="password"
                   type="password"
-                  autoComplete="current-password"
+                  autoComplete="password"
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
@@ -95,12 +124,17 @@ export default function Sign_In() {
             <div>
               <button
                 type="submit"
+                disabled={isLoading}
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Sign in
+                {isLoading ? "Loading..." : "Sign in"}
               </button>
             </div>
           </form>
+
+          <div className="w-full flex flex-row justify-center items-center">
+            {error && <div className="text-center text-red-500">{error}</div>}
+          </div>
 
           <p className="mt-10 text-center text-sm text-gray-500">
             Not a member?{" "}

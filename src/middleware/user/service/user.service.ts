@@ -27,10 +27,25 @@ export default class UserService {
     refresh_token: string,
   ) {
     const newhashedToken = refresh_token ? refresh_token : null;
-    await User.findOneAndUpdate(
-      { email: email.toLowerCase(), "tokens.refresh_token": old_refresh_token },
-      { $set: { "tokens.$.refresh_token": newhashedToken } },
-    );
+    if (newhashedToken) {
+      await User.findOneAndUpdate(
+        {
+          email: email.toLowerCase(),
+          "tokens.refresh_token": old_refresh_token,
+        },
+        { $set: { "tokens.$.refresh_token": newhashedToken } },
+      );
+    }
+    return;
+  }
+
+  async removeRefreshTokenByEmail(email: string, refresh_token: string) {
+    if (refresh_token) {
+      await User.findOneAndUpdate(
+        { email: email.toLowerCase(), "tokens.refresh_token": refresh_token },
+        { $pull: { tokens: { refresh_token: refresh_token } } },
+      );
+    }
     return;
   }
 
@@ -64,7 +79,6 @@ export default class UserService {
         password: newPassword,
       });
       await user.save();
-      this.logger.info(`user created successfully ${JSON.stringify(user)}`);
       return {
         id: user._id,
         email: user.email,
