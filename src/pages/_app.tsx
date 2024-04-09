@@ -29,8 +29,8 @@ const App = ({ Component, pageProps }) => {
   return (
     <>
       <Common />
-      {/* <Ads /> */}
-      {/* <GoogleAnalytics gaId={String(process.env.NEXT_PUBLIC_GA_ID)} /> */}
+      <Ads />
+      <GoogleAnalytics gaId={String(process.env.NEXT_PUBLIC_GA_ID)} />
       <Component {...pageProps} />
     </>
   );
