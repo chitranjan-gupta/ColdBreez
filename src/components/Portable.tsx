@@ -43,7 +43,7 @@ export const ptComponents = {
       const { url } = value;
       return <InstaPost url={url} />;
     },
-    twitter: ({ value }) => {
+    twitterembed: ({ value }) => {
       if (!value) {
         return null;
       }
