@@ -25,7 +25,7 @@ export const ptComponents = {
         </div>
       );
     },
-    youtube: ({ value }) => {
+    youtubeembed: ({ value }) => {
       if (!value) {
         return null;
       }
