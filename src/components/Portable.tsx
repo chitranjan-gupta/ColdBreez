@@ -3,8 +3,8 @@ import type { PortableTextReactComponents } from "@portabletext/react";
 import Image from "next/image";
 import ReactPlayer from "react-player";
 import { Tweet } from "react-tweet";
+import { InstagramEmbed } from "react-social-media-embed";
 import { Tweetcomponents } from "@/components/tweet";
-import { InstaPost } from "@/components/instagram";
 import { Table } from "@/components/table";
 import { urlFor } from "@/lib/sanity";
 
@@ -36,12 +36,16 @@ export const ptComponents = {
         </div>
       );
     },
-    instagram: ({ value }) => {
+    instagramembed: ({ value }) => {
       if (!value) {
         return null;
       }
       const { url } = value;
-      return <InstaPost url={url} />;
+      return (
+        <div className="w-full flex flex-row justify-center items-center">
+          <InstagramEmbed url={url} width={328} />
+        </div>
+      );
     },
     twitterembed: ({ value }) => {
       if (!value) {

@@ -1,5 +1,4 @@
 import React from "react";
-import Script from "next/script";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
@@ -31,14 +30,6 @@ const Post = ({ post, posts }) => {
   } = post;
   return (
     <>
-      <Script
-        async
-        src="https://www.instagram.com/embed.js"
-        strategy="lazyOnload"
-        onReady={() => {
-          console.log("loading instagram post");
-        }}
-      ></Script>
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
