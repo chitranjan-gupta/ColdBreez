@@ -34,6 +34,7 @@
     "react-player": "^2.14.1",
     "react-social-media-embed": "^2.5.13",
     "react-tweet": "^3.2.0",
+    "swr": "^2.2.5",
     "tailwindcss": "3.3.2",
     "web-push": "^3.6.6"
   },

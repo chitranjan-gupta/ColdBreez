@@ -38,6 +38,7 @@ const nextConfig = {
       },
       { protocol: "https", hostname: "pbs.twimg.com", port: "" },
       { protocol: "https", hostname: "abs.twimg.com", port: "" },
+      { protocol: "https", hostname: "flowbite.com", port: "" },
     ],
   },
   async redirects() {
