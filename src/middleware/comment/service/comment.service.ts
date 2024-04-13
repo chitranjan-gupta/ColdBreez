@@ -21,6 +21,7 @@ export default class CommentService {
           await comment.save();
           comments.children.push(comment._id);
           await comments.save();
+          return comments;
         }
       } else {
         const comment = new Comment({
@@ -29,8 +30,8 @@ export default class CommentService {
           userId: payload.userId,
         });
         await comment.save();
+        return comment;
       }
-      return true;
     } catch (err) {
       this.logger.error(err);
       return false;
@@ -39,7 +40,16 @@ export default class CommentService {
 
   async update(payload) {
     try {
-      return true;
+      if (payload.commentId) {
+        const comment = await Comment.findOneAndUpdate(
+          { _id: payload.commentId },
+          { message: payload.message },
+          { new: true },
+        );
+        return comment;
+      } else {
+        return false;
+      }
     } catch (err) {
       this.logger.error(err);
       return false;
@@ -57,7 +67,9 @@ export default class CommentService {
       } else {
         const comments = await Comment.find({
           postId: payload.postId,
-        }).populate("userId", "name");
+        })
+          .populate("userId", "name")
+          .sort({ updatedAt: -1 });
         return comments;
       }
     } catch (err) {

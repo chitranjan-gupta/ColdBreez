@@ -210,8 +210,8 @@ export async function getStaticProps(context: { params: { name?: "" } }) {
     props: {
       author,
       posts,
-      revalidate: 10,
     },
+    revalidate: 10,
   };
 }
 

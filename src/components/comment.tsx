@@ -14,6 +14,7 @@ import {
   ChevronRightIcon,
 } from "@heroicons/react/24/solid";
 import DropDown from "@/components/dropdown";
+import { useComment } from "@/context/CommentContext";
 
 type CommentFormProps = {
   messages: string;
@@ -84,9 +85,12 @@ type User = {
 };
 
 type CommentViewProps = {
+  _id: string;
   profileUrl: string;
   userId: User;
   createdAt: string;
+  message: string;
+  parentId?: string;
   messages: string;
   setMessages: Dispatch<SetStateAction<string>>;
   edit: boolean;
@@ -95,12 +99,14 @@ type CommentViewProps = {
   setIsExpand: Dispatch<SetStateAction<boolean>>;
   reply: boolean;
   setReply: Dispatch<SetStateAction<boolean>>;
-  onSubmit: (event: FormEvent<HTMLFormElement>) => Promise<void>;
   children: string[];
 };
 
 const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
   function CommentView(props, ref) {
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const { setComments } = useComment();
     const newRef = useRef<any>();
     function check(callback, args) {
       if (props.reply && newRef.current) {
@@ -116,6 +122,58 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
       } else {
         callback(args);
         return true;
+      }
+    }
+    async function onSubmit(event: FormEvent<HTMLFormElement>) {
+      event.preventDefault();
+      props.setEdit(false);
+      if (props.messages != props.message) {
+        setLoading(true);
+        setError(null); // Clear previous errors when a new request starts
+        try {
+          const formData = new FormData(event.currentTarget);
+          const jsonData = (function (formData) {
+            const json = {};
+            json["postId"] = "d116ded5-268f-4971-a85a-0c9925a0af03";
+            json["userId"] =
+              formData.get("anonymous").toString() == "on"
+                ? "661540dcc9dd75cc41f93879"
+                : "661540dcc9dd75cc41f93899";
+            formData.delete("anonymous");
+            if (props.parentId) {
+              json["parentId"] = props.parentId;
+            } else {
+              json["commentId"] = props._id;
+            }
+            formData.forEach((value, key) => {
+              json[key] = value;
+            });
+            return JSON.stringify(json);
+          })(formData);
+          const res = await fetch(
+            `/api/comment/${props.parentId ? "create" : "update"}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: jsonData,
+            },
+          );
+          const data = await res.json();
+          if (!res.ok) {
+            console.log(data);
+            throw new Error(res.statusText);
+          }
+          if (res.ok) {
+          }
+        } catch (err) {
+          // Capture the error message to display to the user
+          setError(err.message);
+          console.error(err);
+        } finally {
+          setLoading(false);
+        }
       }
     }
     return (
@@ -161,7 +219,8 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
                 ref={ref}
                 messages={props.messages}
                 setMessages={props.setMessages}
-                onSubmit={props.onSubmit}
+                onSubmit={onSubmit}
+                loading={loading}
               />
             ) : (
               <p className="text-gray-500 dark:text-gray-400">
@@ -236,7 +295,7 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
                 ref={newRef}
                 isEdit={true}
                 comment={{
-                  _id: props.children.length + 1,
+                  _id: String(props.children.length + 1),
                   profileUrl: props.profileUrl,
                   userId:
                     props.userId && props.userId.name
@@ -246,6 +305,7 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
                   message: "",
                   children: [],
                 }}
+                parentId={props._id}
               />
             )}
             {props.children.map((child) => (
@@ -261,6 +321,7 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
 type CommentProps = {
   comment: comment;
   isEdit: boolean;
+  parentId?: string;
 };
 
 const Comment = forwardRef<HTMLTextAreaElement, CommentProps>(
@@ -271,22 +332,6 @@ const Comment = forwardRef<HTMLTextAreaElement, CommentProps>(
       props.comment && props.comment.message ? props.comment.message : "",
     ); //Store the comment
     const [reply, setReply] = useState(false); // Enable reply to comment
-    async function onSubmit(event: FormEvent) {
-      event.preventDefault();
-      setEdit(false);
-      if (messages.length > 0) {
-        // const index = comments.findIndex(
-        //   (comment) => comment._id == props.comment._id,
-        // );
-        // if (index > -1) {
-        //   comments[index].children.push({
-        //     message: messages,
-        //     ...props.comment,
-        //   });
-        //   setReply(false);
-        // }
-      }
-    }
     return (
       <CommentView
         ref={ref}
@@ -298,15 +343,15 @@ const Comment = forwardRef<HTMLTextAreaElement, CommentProps>(
         setMessages={setMessages}
         reply={reply}
         setReply={setReply}
-        onSubmit={onSubmit}
+        parentId={props.parentId}
         {...props.comment}
       />
     );
   },
 );
 
-type comment = {
-  _id: number;
+export type comment = {
+  _id: string;
   profileUrl: string;
   userId: User;
   createdAt: string;
@@ -361,7 +406,7 @@ const SuspenseComment = forwardRef<HTMLTextAreaElement, { _id: string }>(
 
 export default function Comments() {
   const [message, setMessage] = useState("");
-  const [comments, setComments] = useState<comment[]>([]);
+  const { comments, setComments } = useComment();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -373,7 +418,6 @@ export default function Comments() {
       const jsonData = (function (formData) {
         const json = {};
         json["postId"] = "d116ded5-268f-4971-a85a-0c9925a0af03";
-        console.log(formData.get("anonymous").toString());
         json["userId"] =
           formData.get("anonymous").toString() == "on"
             ? "661540dcc9dd75cc41f93879"
@@ -397,7 +441,7 @@ export default function Comments() {
         throw new Error(res.statusText);
       }
       if (res.ok) {
-        console.log(data);
+        setComments((c) => [data, ...c]);
       }
     } catch (err) {
       // Capture the error message to display to the user
@@ -407,23 +451,6 @@ export default function Comments() {
       setLoading(false);
     }
   }
-  useEffect(() => {
-    async function getComments() {
-      const res = await fetch("/api/comment/read", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          postId: "d116ded5-268f-4971-a85a-0c9925a0af03",
-        }),
-      });
-      const data = await res.json();
-      console.log(data);
-      setComments(data);
-    }
-    void getComments();
-  }, []);
   return (
     <>
       <section className="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">

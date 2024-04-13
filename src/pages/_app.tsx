@@ -29,9 +29,15 @@ const App = ({ Component, pageProps }) => {
   return (
     <>
       <Common />
-      <Ads />
-      <GoogleTagManager gtmId={String(process.env.NEXT_PUBLIC_GTM_ID)} />
-      <GoogleAnalytics gaId={String(process.env.NEXT_PUBLIC_GA_ID)} />
+      {process.env.NODE_ENV === "production" ? (
+        <>
+          <Ads />
+          <GoogleTagManager gtmId={String(process.env.NEXT_PUBLIC_GTM_ID)} />
+          <GoogleAnalytics gaId={String(process.env.NEXT_PUBLIC_GA_ID)} />
+        </>
+      ) : (
+        <></>
+      )}
       <Component {...pageProps} />
     </>
   );
