@@ -11,12 +11,12 @@ export default class CommentService {
     try {
       if (payload.parentId) {
         const comments = await Comment.findById(payload.parentId);
-        if(comments && comments.postId == payload.postId){
+        if (comments && comments.postId == payload.postId) {
           const comment = new Comment({
             message: payload.message,
             postId: payload.postId,
             userId: payload.userId,
-            parentId: payload.parentId
+            parentId: payload.parentId,
           });
           await comment.save();
           comments.children.push(comment._id);
@@ -48,7 +48,18 @@ export default class CommentService {
 
   async read(payload) {
     try {
-      return true;
+      if (payload.commentId && payload.postId) {
+        const comment = await Comment.findOne({
+          _id: payload.commentId,
+          postId: payload.postId,
+        }).populate("userId", "name");
+        return comment;
+      } else {
+        const comments = await Comment.find({
+          postId: payload.postId,
+        }).populate("userId", "name");
+        return comments;
+      }
     } catch (err) {
       this.logger.error(err);
       return false;
