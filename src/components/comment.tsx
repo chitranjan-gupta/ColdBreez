@@ -54,15 +54,12 @@ const CommentForm = forwardRef<HTMLTextAreaElement, CommentFormProps>(
               <div className="flex flex-row">
                 <div className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
                   <input
-                    id="anonymous"
                     type="checkbox"
                     name="anonymous"
                     className="rounded-xl outline-none"
                   />
                   <input type="hidden" name="anonymous" value="off" />
-                  <label htmlFor="anonymous" className="ml-2">
-                    Comment as Anonymous User
-                  </label>
+                  <label className="ml-2">Comment as Anonymous User</label>
                 </div>
                 <div className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
                   <PaperClipIcon title="Insert file" className="h-5 w-5" />
@@ -91,6 +88,7 @@ type CommentViewProps = {
   createdAt: string;
   message: string;
   parentId?: string;
+  parentID?: string;
   messages: string;
   setMessages: Dispatch<SetStateAction<string>>;
   edit: boolean;
@@ -99,6 +97,7 @@ type CommentViewProps = {
   setIsExpand: Dispatch<SetStateAction<boolean>>;
   reply: boolean;
   setReply: Dispatch<SetStateAction<boolean>>;
+  parentReply?: Dispatch<SetStateAction<boolean>>;
   children: string[];
 };
 
@@ -140,8 +139,8 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
                 ? "661540dcc9dd75cc41f93879"
                 : "661540dcc9dd75cc41f93899";
             formData.delete("anonymous");
-            if (props.parentId) {
-              json["parentId"] = props.parentId;
+            if (props.parentID) {
+              json["parentId"] = props.parentID;
             } else {
               json["commentId"] = props._id;
             }
@@ -151,7 +150,7 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
             return JSON.stringify(json);
           })(formData);
           const res = await fetch(
-            `/api/comment/${props.parentId ? "create" : "update"}`,
+            `/api/comment/${props.parentID ? "create" : "update"}`,
             {
               method: "POST",
               headers: {
@@ -166,6 +165,9 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
             throw new Error(res.statusText);
           }
           if (res.ok) {
+            if (props.parentID) {
+              props.parentReply(false);
+            }
           }
         } catch (err) {
           // Capture the error message to display to the user
@@ -174,6 +176,43 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
         } finally {
           setLoading(false);
         }
+      }
+    }
+    async function del() {
+      setLoading(true);
+      setError(null); // Clear previous errors when a new request starts
+      try {
+        const jsonData = (function () {
+          const json = {};
+          json["postId"] = "d116ded5-268f-4971-a85a-0c9925a0af03";
+          json["userId"] = "661540dcc9dd75cc41f93899";
+          if (props.parentId) {
+            json["parentId"] = props.parentId;
+          }
+          json["commentId"] = props._id;
+          return JSON.stringify(json);
+        })();
+        const res = await fetch("/api/comment/delete", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: jsonData,
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          console.log(data);
+          throw new Error(res.statusText);
+        }
+        if (res.ok) {
+          console.log(data);
+        }
+      } catch (err) {
+        // Capture the error message to display to the user
+        setError(err.message);
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
     }
     return (
@@ -283,11 +322,13 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
                 <TrashIcon
                   title="Delete"
                   className="h-5 w-5 hover:text-violet-500"
+                  onClick={del}
                 />
               </div>
             </div>
           </div>
         </article>
+        {error && <p>{error}</p>}
         {props.isExpand && (
           <div className="ml-6 lg:ml-12">
             {props.reply && (
@@ -304,8 +345,10 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
                   createdAt: new Date().toDateString(),
                   message: "",
                   children: [],
+                  parentId: props._id,
                 }}
-                parentId={props._id}
+                parentReply={props.setReply}
+                parentID={props._id}
               />
             )}
             {props.children.map((child) => (
@@ -321,7 +364,8 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
 type CommentProps = {
   comment: comment;
   isEdit: boolean;
-  parentId?: string;
+  parentID?: string;
+  parentReply?: Dispatch<SetStateAction<boolean>>;
 };
 
 const Comment = forwardRef<HTMLTextAreaElement, CommentProps>(
@@ -343,7 +387,8 @@ const Comment = forwardRef<HTMLTextAreaElement, CommentProps>(
         setMessages={setMessages}
         reply={reply}
         setReply={setReply}
-        parentId={props.parentId}
+        parentID={props.parentID}
+        parentReply={props.parentReply}
         {...props.comment}
       />
     );
@@ -357,6 +402,7 @@ export type comment = {
   createdAt: string;
   message: string;
   children: string[];
+  parentId?: string;
 };
 
 const SuspenseComment = forwardRef<HTMLTextAreaElement, { _id: string }>(

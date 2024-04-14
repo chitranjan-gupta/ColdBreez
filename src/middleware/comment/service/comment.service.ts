@@ -67,6 +67,7 @@ export default class CommentService {
       } else {
         const comments = await Comment.find({
           postId: payload.postId,
+          parentId: null,
         })
           .populate("userId", "name")
           .sort({ updatedAt: -1 });
@@ -80,7 +81,21 @@ export default class CommentService {
 
   async delete(payload) {
     try {
-      return true;
+      if (payload.commentId) {
+        if (payload.parentId) {
+          await Comment.findOneAndUpdate(
+            { _id: payload.parentId },
+            { $pull: { children: payload.commentId } },
+          );
+        }
+        const comment = await Comment.findOne({ _id: payload.commentId });
+        if(comment){
+          await Comment.findOneAndDelete({ _id: payload.commentId });
+          return comment;
+        }else{
+          return false;
+        }
+      }
     } catch (err) {
       this.logger.error(err);
       return false;

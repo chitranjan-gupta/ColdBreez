@@ -59,7 +59,7 @@ const CommentController = async (req: Request, res: Response) => {
             });
           } else {
             return new Promise<void>((resolve) => {
-              res.status(400).json({ message: "COMMENT_NOT_PRESENT" });
+              res.status(404).json({ message: "COMMENT_NOT_PRESENT" });
               res.end();
               return resolve();
             });
@@ -71,13 +71,13 @@ const CommentController = async (req: Request, res: Response) => {
           const response = await commentService.delete(req.body);
           if (response) {
             return new Promise<void>((resolve) => {
-              res.status(200).json({ message: "COMMENT_SAVED" });
+              res.status(200).json(response);
               res.end();
               return resolve();
             });
           } else {
             return new Promise<void>((resolve) => {
-              res.status(400).json({ message: "COMMENT_NOT_SAVED" });
+              res.status(404).json({ message: "COMMENT_NOT_PRESENT" });
               res.end();
               return resolve();
             });
@@ -95,7 +95,7 @@ const CommentController = async (req: Request, res: Response) => {
   } catch (err) {
     logger.error(err);
     return new Promise<void>((resolve) => {
-      res.status(500).json({ message: "Error In Server Contact" });
+      res.status(500).json({ message: "Error In Server Comment" });
       res.end();
       return resolve();
     });
