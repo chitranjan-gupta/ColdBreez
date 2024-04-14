@@ -89,10 +89,10 @@ export default class CommentService {
           );
         }
         const comment = await Comment.findOne({ _id: payload.commentId });
-        if(comment){
+        if (comment) {
           await Comment.findOneAndDelete({ _id: payload.commentId });
           return comment;
-        }else{
+        } else {
           return false;
         }
       }

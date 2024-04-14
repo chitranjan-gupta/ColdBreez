@@ -1,15 +1,20 @@
-import React, { useEffect } from "react";
-import CommentContext from "@/context/CommentContext";
-import MyModal from "@/components/diallog";
-import Comments from "@/components/comment";
+import React from "react";
+import { ApiProvider } from "@reduxjs/toolkit/query/react";
+import { commentApi } from "@/state/api/comment.api";
+import Comments from "@/components/comments";
 
 export default function Index() {
-  useEffect(() => {}, []);
   return (
     <>
-      <CommentContext>
+      <ApiProvider api={commentApi}>
         <Comments />
-      </CommentContext>
+      </ApiProvider>
     </>
   );
+}
+
+export async function getServerSideProps() {
+  return {
+    props: {},
+  };
 }

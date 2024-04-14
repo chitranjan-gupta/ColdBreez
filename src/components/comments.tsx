@@ -1,5 +1,5 @@
 import { useState, useRef, forwardRef, useEffect } from "react";
-import type { Dispatch, FormEvent, SetStateAction } from "react";
+import type { FormEvent } from "react";
 import Image from "next/image";
 import {
   HandThumbUpIcon,
@@ -13,15 +13,21 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
 } from "@heroicons/react/24/solid";
+import type {
+  CommentFormProps,
+  CommentViewProps,
+  comment,
+  CommentProps,
+} from "@/types/index";
 import DropDown from "@/components/dropdown";
-import { useComment } from "@/context/CommentContext";
-
-type CommentFormProps = {
-  messages: string;
-  setMessages: Dispatch<SetStateAction<string>>;
-  onSubmit: (event: FormEvent<HTMLFormElement>) => Promise<void>;
-  loading?: boolean;
-};
+import { Spinner } from "@/components/Spinner";
+import {
+  useGetCommentsQuery,
+  useGetCommentQuery,
+  useAddCommentMutation,
+  useUpdateCommentMutation,
+  useDeleteCommentMutation,
+} from "state/api/comment.api";
 
 const CommentForm = forwardRef<HTMLTextAreaElement, CommentFormProps>(
   function CommentForm(props, ref) {
@@ -49,7 +55,13 @@ const CommentForm = forwardRef<HTMLTextAreaElement, CommentFormProps>(
                 disabled={props.loading ? props.loading : false}
                 className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                {props.loading ? "Loading..." : "Post Comment"}
+                {props.loading ? (
+                  <div className="flex flex-row items-center text-white">
+                    <Spinner /> Loading...
+                  </div>
+                ) : (
+                  "Post Comment"
+                )}
               </button>
               <div className="flex flex-row">
                 <div className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
@@ -76,36 +88,13 @@ const CommentForm = forwardRef<HTMLTextAreaElement, CommentFormProps>(
   },
 );
 
-type User = {
-  _id: string;
-  name: string;
-};
-
-type CommentViewProps = {
-  _id: string;
-  profileUrl: string;
-  userId: User;
-  createdAt: string;
-  message: string;
-  parentId?: string;
-  parentID?: string;
-  messages: string;
-  setMessages: Dispatch<SetStateAction<string>>;
-  edit: boolean;
-  setEdit: Dispatch<SetStateAction<boolean>>;
-  isExpand: boolean;
-  setIsExpand: Dispatch<SetStateAction<boolean>>;
-  reply: boolean;
-  setReply: Dispatch<SetStateAction<boolean>>;
-  parentReply?: Dispatch<SetStateAction<boolean>>;
-  children: string[];
-};
-
 const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
   function CommentView(props, ref) {
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
-    const { setComments } = useComment();
+    const [deleteComment, { isLoading: isDeleting }] =
+      useDeleteCommentMutation();
+    const [updateComment, { isLoading: isUpdating }] =
+      useUpdateCommentMutation();
+    const [addComment, { isLoading: isCreating }] = useAddCommentMutation();
     const newRef = useRef<any>();
     function check(callback, args) {
       if (props.reply && newRef.current) {
@@ -127,93 +116,47 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
       event.preventDefault();
       props.setEdit(false);
       if (props.messages != props.message) {
-        setLoading(true);
-        setError(null); // Clear previous errors when a new request starts
-        try {
-          const formData = new FormData(event.currentTarget);
-          const jsonData = (function (formData) {
-            const json = {};
-            json["postId"] = "d116ded5-268f-4971-a85a-0c9925a0af03";
-            json["userId"] =
-              formData.get("anonymous").toString() == "on"
-                ? "661540dcc9dd75cc41f93879"
-                : "661540dcc9dd75cc41f93899";
-            formData.delete("anonymous");
-            if (props.parentID) {
-              json["parentId"] = props.parentID;
-            } else {
-              json["commentId"] = props._id;
-            }
-            formData.forEach((value, key) => {
-              json[key] = value;
-            });
-            return JSON.stringify(json);
-          })(formData);
-          const res = await fetch(
-            `/api/comment/${props.parentID ? "create" : "update"}`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: jsonData,
-            },
-          );
-          const data = await res.json();
-          if (!res.ok) {
-            console.log(data);
-            throw new Error(res.statusText);
+        const formData = new FormData(event.currentTarget);
+        const jsonData = (function (formData) {
+          const json = {};
+          json["postId"] = "d116ded5-268f-4971-a85a-0c9925a0af03";
+          json["userId"] =
+            formData.get("anonymous").toString() == "on"
+              ? "661540dcc9dd75cc41f93879"
+              : "661540dcc9dd75cc41f93899";
+          formData.delete("anonymous");
+          if (props.parentID) {
+            json["parentId"] = props.parentID;
+          } else {
+            json["commentId"] = props._id;
           }
-          if (res.ok) {
-            if (props.parentID) {
-              props.parentReply(false);
-            }
+          formData.forEach((value, key) => {
+            json[key] = value;
+          });
+          return json;
+        })(formData) as comment;
+        if (props.parentID) {
+          await addComment(jsonData);
+          if (props.parentID) {
+            props.parentReply(false);
           }
-        } catch (err) {
-          // Capture the error message to display to the user
-          setError(err.message);
-          console.error(err);
-        } finally {
-          setLoading(false);
+        } else {
+          await updateComment(jsonData);
         }
       }
     }
-    async function del() {
-      setLoading(true);
-      setError(null); // Clear previous errors when a new request starts
-      try {
-        const jsonData = (function () {
-          const json = {};
-          json["postId"] = "d116ded5-268f-4971-a85a-0c9925a0af03";
-          json["userId"] = "661540dcc9dd75cc41f93899";
-          if (props.parentId) {
-            json["parentId"] = props.parentId;
-          }
-          json["commentId"] = props._id;
-          return JSON.stringify(json);
-        })();
-        const res = await fetch("/api/comment/delete", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: jsonData,
-        });
-        const data = await res.json();
-        if (!res.ok) {
-          console.log(data);
-          throw new Error(res.statusText);
+    async function onDelete() {
+      const jsonData = (function () {
+        const json = {};
+        json["postId"] = "d116ded5-268f-4971-a85a-0c9925a0af03";
+        json["userId"] = "661540dcc9dd75cc41f93899";
+        if (props.parentId) {
+          json["parentId"] = props.parentId;
         }
-        if (res.ok) {
-          console.log(data);
-        }
-      } catch (err) {
-        // Capture the error message to display to the user
-        setError(err.message);
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+        json["commentId"] = props._id;
+        return json;
+      })() as comment;
+      await deleteComment(jsonData);
     }
     return (
       <div>
@@ -259,7 +202,7 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
                 messages={props.messages}
                 setMessages={props.setMessages}
                 onSubmit={onSubmit}
-                loading={loading}
+                loading={isUpdating}
               />
             ) : (
               <p className="text-gray-500 dark:text-gray-400">
@@ -267,24 +210,25 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
               </p>
             )}
             <div className="hidden md:flex md:items-center md:mt-4 md:space-x-4">
-              <div
-                className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+              <button
                 onClick={() =>
                   check(props.setIsExpand, props.isExpand ? false : true)
                 }
               >
-                {props.isExpand ? (
-                  <ChevronDownIcon
-                    title="Expand"
-                    className="h-5 w-5 hover:text-violet-500"
-                  />
-                ) : (
-                  <ChevronRightIcon
-                    title="Contract"
-                    className="h-5 w-5 hover:text-violet-500"
-                  />
-                )}
-              </div>
+                <div className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+                  {props.isExpand ? (
+                    <ChevronDownIcon
+                      title="Expand"
+                      className="h-5 w-5 hover:text-violet-500"
+                    />
+                  ) : (
+                    <ChevronRightIcon
+                      title="Contract"
+                      className="h-5 w-5 hover:text-violet-500"
+                    />
+                  )}
+                </div>
+              </button>
               <div className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
                 <HandThumbUpIcon
                   title="Like"
@@ -306,29 +250,30 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
                   className="h-5 w-5 hover:text-violet-500"
                 />
               </div>
-              <div
-                className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+              <button
                 onClick={() => {
                   props.setIsExpand(true);
                   props.setReply(true);
                 }}
               >
-                <ChatBubbleLeftEllipsisIcon
-                  title="Reply"
-                  className="h-5 w-5 hover:text-violet-500"
-                />
-              </div>
-              <div className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
-                <TrashIcon
-                  title="Delete"
-                  className="h-5 w-5 hover:text-violet-500"
-                  onClick={del}
-                />
-              </div>
+                <div className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+                  <ChatBubbleLeftEllipsisIcon
+                    title="Reply"
+                    className="h-5 w-5 hover:text-violet-500"
+                  />
+                </div>
+              </button>
+              <button disabled={isDeleting} onClick={onDelete}>
+                <div className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+                  <TrashIcon
+                    title="Delete"
+                    className="h-5 w-5 hover:text-violet-500"
+                  />
+                </div>
+              </button>
             </div>
           </div>
         </article>
-        {error && <p>{error}</p>}
         {props.isExpand && (
           <div className="ml-6 lg:ml-12">
             {props.reply && (
@@ -352,7 +297,13 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
               />
             )}
             {props.children.map((child) => (
-              <SuspenseComment key={child.toString()} _id={child} />
+              <>
+                {child instanceof Object ? (
+                  <Comment comment={child} isEdit={false} />
+                ) : (
+                  <SuspenseComment key={child.toString()} _id={child} />
+                )}
+              </>
             ))}
           </div>
         )}
@@ -360,13 +311,6 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
     );
   },
 );
-
-type CommentProps = {
-  comment: comment;
-  isEdit: boolean;
-  parentID?: string;
-  parentReply?: Dispatch<SetStateAction<boolean>>;
-};
 
 const Comment = forwardRef<HTMLTextAreaElement, CommentProps>(
   function Comment(props, ref) {
@@ -395,56 +339,16 @@ const Comment = forwardRef<HTMLTextAreaElement, CommentProps>(
   },
 );
 
-export type comment = {
-  _id: string;
-  profileUrl: string;
-  userId: User;
-  createdAt: string;
-  message: string;
-  children: string[];
-  parentId?: string;
-};
-
 const SuspenseComment = forwardRef<HTMLTextAreaElement, { _id: string }>(
   function SuspenseComment(props, ref) {
-    const [loading, setLoading] = useState(false);
-    const [comment, setComment] = useState<comment>();
-    const [error, setError] = useState("");
-    async function getComment(_id: string) {
-      setLoading(true);
-      setError(null); // Clear previous errors when a new request starts
-      try {
-        const res = await fetch("/api/comment/read", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            postId: "d116ded5-268f-4971-a85a-0c9925a0af03",
-            commentId: _id,
-          }),
-        });
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(res.statusText);
-        }
-        if (res.ok) {
-          setComment(data);
-        }
-      } catch (err) {
-        // Capture the error message to display to the user
-        setError(err.message);
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    useEffect(() => {
-      void getComment(props._id);
-    }, [props._id]);
+    const { data: comment, isLoading } = useGetCommentQuery(props._id);
     return (
       <>
-        {loading ? "Loading..." : <Comment comment={comment} isEdit={false} />}
+        {isLoading ? (
+          "Loading..."
+        ) : (
+          <Comment comment={comment} isEdit={false} />
+        )}
       </>
     );
   },
@@ -452,50 +356,25 @@ const SuspenseComment = forwardRef<HTMLTextAreaElement, { _id: string }>(
 
 export default function Comments() {
   const [message, setMessage] = useState("");
-  const { comments, setComments } = useComment();
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { data: comments, isLoading, isError, error } = useGetCommentsQuery();
+  const [addComment, { isLoading: loading }] = useAddCommentMutation();
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setLoading(true);
-    setError(null); // Clear previous errors when a new request starts
-    try {
-      const formData = new FormData(event.currentTarget);
-      const jsonData = (function (formData) {
-        const json = {};
-        json["postId"] = "d116ded5-268f-4971-a85a-0c9925a0af03";
-        json["userId"] =
-          formData.get("anonymous").toString() == "on"
-            ? "661540dcc9dd75cc41f93879"
-            : "661540dcc9dd75cc41f93899";
-        formData.delete("anonymous");
-        formData.forEach((value, key) => {
-          json[key] = value;
-        });
-        return JSON.stringify(json);
-      })(formData);
-      const res = await fetch("/api/comment/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: jsonData,
+    const formData = new FormData(event.currentTarget);
+    const jsonData = (function (formData) {
+      const json = {};
+      json["postId"] = "d116ded5-268f-4971-a85a-0c9925a0af03";
+      json["userId"] =
+        formData.get("anonymous").toString() == "on"
+          ? "661540dcc9dd75cc41f93879"
+          : "661540dcc9dd75cc41f93899";
+      formData.delete("anonymous");
+      formData.forEach((value, key) => {
+        json[key] = value;
       });
-      const data = await res.json();
-      if (!res.ok) {
-        console.log(data);
-        throw new Error(res.statusText);
-      }
-      if (res.ok) {
-        setComments((c) => [data, ...c]);
-      }
-    } catch (err) {
-      // Capture the error message to display to the user
-      setError(err.message);
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+      return json;
+    })(formData) as comment;
+    await addComment(jsonData);
   }
   return (
     <>
@@ -503,7 +382,7 @@ export default function Comments() {
         <div className="max-w-2xl mx-auto px-4">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">
-              {`Discussion (${comments.length})`}
+              {`Discussion (${comments && comments.length ? comments.length : 0})`}
             </h2>
           </div>
           <CommentForm
@@ -512,10 +391,12 @@ export default function Comments() {
             onSubmit={onSubmit}
             loading={loading}
           />
-          <div>{error && <p>{error}</p>}</div>
-          {comments.map((comment) => (
-            <Comment key={comment._id} comment={comment} isEdit={false} />
-          ))}
+          <div>{isError && <p>{JSON.stringify(error)}</p>}</div>
+          <div>{isLoading ? <p>Loading...</p> : ""}</div>
+          {comments &&
+            comments.map((comment) => (
+              <Comment key={comment._id} comment={comment} isEdit={false} />
+            ))}
         </div>
       </section>
     </>
