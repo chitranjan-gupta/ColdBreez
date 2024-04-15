@@ -2,7 +2,8 @@ import type { Request, Response } from "../../types";
 import { UserService } from "../service";
 import ConfigService from "../../config";
 import Log from "../../log";
-import { mongodbConnect } from "../../db";
+import { Cookies } from "../../lib";
+
 
 const UserController = async (req: Request, res: Response) => {
   const logger = new Log();
@@ -19,7 +20,6 @@ const UserController = async (req: Request, res: Response) => {
           });
         }
         case "/api/user/register": {
-          await mongodbConnect(configService.get().db.mongodb_url);
           const usersService = new UserService(logger);
           const response = await usersService.create(req.body);
           if (response.httperror) {
@@ -31,6 +31,36 @@ const UserController = async (req: Request, res: Response) => {
               return resolve();
             });
           } else {
+            return new Promise<void>((resolve) => {
+              res.status(200).json(response);
+              res.end();
+              return resolve();
+            });
+          }
+        }
+        case "/api/user/delete": {
+          const usersService = new UserService(logger);
+          const response = await usersService.delete((req as any).user);
+          if (response.httperror) {
+            return new Promise<void>((resolve) => {
+              res
+                .status(response.httperror.statusCode)
+                .json({ message: response.httperror.message });
+              res.end();
+              return resolve();
+            });
+          } else {
+            const cookies = new Cookies(req, res);
+            cookies.set("access_token", response.tokens.access_token, {
+              httpOnly: true,
+              sameSite: "lax",
+            });
+            cookies.set("refresh_token", response.tokens.refresh_token, {
+              httpOnly: true,
+              sameSite: "lax",
+            });
+            delete response.httperror;
+            delete response.tokens;
             return new Promise<void>((resolve) => {
               res.status(200).json(response);
               res.end();

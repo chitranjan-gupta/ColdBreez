@@ -26,6 +26,7 @@ const userNavigation = [
   { name: "Your Profile", href: "/dashboard/profile" },
   { name: "Settings", href: "#" },
   { name: "Sign out", href: "/dashboard/signout" },
+  { name: "Delete Account", href: "/dashboard/deleteaccount" },
 ];
 
 function classNames(...classes) {

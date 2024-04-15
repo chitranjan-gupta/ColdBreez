@@ -54,10 +54,10 @@ export default class AuthService {
   }
 
   public async validateRefreshToken(payload) {
-    const user = await this.usersService.findUserBySelect({
-      email: payload.email,
-      "tokens.refresh_token": payload.refresh_token,
-    });
+    const user = await this.usersService.isRefreshTokenPresent(
+      payload.email,
+      payload.refresh_token,
+    );
     if (!user) {
       return {
         httperror: {
@@ -70,7 +70,6 @@ export default class AuthService {
         },
       };
     }
-    delete user.password;
     const data = await this.refreshToken(user, payload.refresh_token);
     return {
       ...data,
@@ -82,10 +81,10 @@ export default class AuthService {
   }
 
   public async logout(payload) {
-    const user = await this.usersService.findUserBySelect({
-      email: payload.email,
-      "tokens.refresh_token": payload.refresh_token,
-    });
+    const user = await this.usersService.isRefreshTokenPresent(
+      payload.email,
+      payload.refresh_token,
+    );
     if (!user) {
       return {
         httperror: {
@@ -122,7 +121,7 @@ export default class AuthService {
 
   public async createToken(user) {
     const data: JwtPayload = {
-      userId: user._id,
+      userId: user.id,
       email: user.email,
     };
     const access_token = jwt.sign(

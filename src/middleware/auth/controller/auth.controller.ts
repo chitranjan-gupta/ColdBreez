@@ -4,7 +4,6 @@ import { AuthService } from "../service";
 import { UserService } from "../../user/service";
 import ConfigService from "../../config";
 import { Cookies } from "../../lib";
-import { mongodbConnect } from "../../db";
 
 const AuthController = async (req: Request, res: Response) => {
   const logger = new Log();
@@ -21,7 +20,6 @@ const AuthController = async (req: Request, res: Response) => {
           });
         }
         case "/api/auth/login": {
-          await mongodbConnect(configService.get().db.mongodb_url);
           const usersService = new UserService(logger);
           const authService = new AuthService(
             usersService,
@@ -56,7 +54,6 @@ const AuthController = async (req: Request, res: Response) => {
           }
         }
         case "/api/auth/refresh": {
-          await mongodbConnect(configService.get().db.mongodb_url);
           const usersService = new UserService(logger);
           const authService = new AuthService(
             usersService,
@@ -93,7 +90,6 @@ const AuthController = async (req: Request, res: Response) => {
           }
         }
         case "/api/auth/logout": {
-          await mongodbConnect(configService.get().db.mongodb_url);
           const usersService = new UserService(logger);
           const authService = new AuthService(
             usersService,

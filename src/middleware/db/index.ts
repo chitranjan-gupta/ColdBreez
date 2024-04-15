@@ -1,3 +1,4 @@
 import mongodbConnect from "./mongodb";
+import prisma from "./prisma";
 
-export { mongodbConnect };
+export { prisma, mongodbConnect };

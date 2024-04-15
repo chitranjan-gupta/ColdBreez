@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { User } from "../model";
+import { prisma } from "../../db";
 
 export default class UserService {
   private logger;
@@ -14,10 +14,16 @@ export default class UserService {
   }
 
   async updateRefreshTokenByEmail(email: string, refresh_token: string) {
-    await User.findOneAndUpdate(
-      { email: email.toLowerCase() },
-      { $push: { tokens: { refresh_token: refresh_token } } },
-    );
+    await prisma.user.update({
+      where: {
+        email: email,
+      },
+      data: {
+        refresh_tokens: {
+          push: refresh_token,
+        },
+      },
+    });
     return;
   }
 
@@ -28,39 +34,134 @@ export default class UserService {
   ) {
     const newhashedToken = refresh_token ? refresh_token : null;
     if (newhashedToken) {
-      await User.findOneAndUpdate(
-        {
-          email: email.toLowerCase(),
-          "tokens.refresh_token": old_refresh_token,
+      const user = await prisma.user.findUnique({
+        where: {
+          email: email,
         },
-        { $set: { "tokens.$.refresh_token": newhashedToken } },
+        select: {
+          refresh_tokens: true,
+        },
+      });
+      const new_refresh_tokens = user.refresh_tokens.map((refresh_token) =>
+        refresh_token == old_refresh_token ? newhashedToken : refresh_token,
       );
+      await prisma.user.update({
+        where: {
+          email: email,
+        },
+        data: {
+          refresh_tokens: new_refresh_tokens,
+        },
+      });
     }
     return;
   }
 
   async removeRefreshTokenByEmail(email: string, old_refresh_token: string) {
     if (old_refresh_token) {
-      await User.findOneAndUpdate(
-        { email: email.toLowerCase() },
-        { $pull: { tokens: { refresh_token: old_refresh_token } } },
+      const user = await prisma.user.findUnique({
+        where: {
+          email: email,
+        },
+        select: {
+          refresh_tokens: true,
+        },
+      });
+      const new_refresh_tokens = user.refresh_tokens.filter(
+        (refresh_token) => refresh_token !== old_refresh_token,
       );
+      await prisma.user.update({
+        where: {
+          email: email,
+        },
+        data: {
+          refresh_tokens: new_refresh_tokens,
+        },
+      });
     }
     return;
   }
 
   async findOneByEmail(email: string) {
-    return await User.findOne({ email });
+    return await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
   }
 
-  async findUserBySelect(selects) {
-    return await User.findOne(selects);
+  async isRefreshTokenPresent(email: string, old_refresh_token: string) {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+      select: {
+        id: true,
+        email: true,
+        refresh_tokens: true,
+      },
+    });
+    if (user && user.refresh_tokens) {
+      const index = user.refresh_tokens.findIndex(
+        (refresh_token: string) => refresh_token == old_refresh_token,
+      );
+      if (index > -1) {
+        return user;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  async delete(user) {
+    const existingEmail = await prisma.user.findUnique({
+      where: {
+        email: user.email,
+      },
+      select: {
+        email: true,
+      },
+    });
+    if (existingEmail && existingEmail.email) {
+      await prisma.user.delete({
+        where: {
+          email: user.email,
+        },
+      });
+      return {
+        message: "USER_DELETED",
+        tokens:{
+          access_token: null,
+          refresh_token: null
+        },
+        httperror: {
+          statusCode: undefined,
+          message: undefined,
+        },
+      };
+    } else {
+      return {
+        httperror: {
+          statusCode: 404,
+          message: "user with email doesn't exists",
+        },
+      };
+    }
   }
 
   async create(newUser) {
-    const { email } = newUser;
-    const existingUser = await this.findOneByEmail(email.toLowerCase());
-    if (existingUser) {
+    const existingEmail = await prisma.user.findUnique({
+      where: {
+        email: newUser.email,
+      },
+      select: {
+        email: true,
+      },
+    });
+
+    if (existingEmail) {
       return {
         httperror: {
           statusCode: 422,
@@ -69,18 +170,37 @@ export default class UserService {
       };
     }
 
+    const existingUsername = await prisma.user.findUnique({
+      where: {
+        username: newUser.username,
+      },
+      select: {
+        username: true,
+      },
+    });
+
+    if (existingUsername) {
+      return {
+        httperror: {
+          statusCode: 422,
+          message: "user with username already exists",
+        },
+      };
+    }
+
     const newPassword = await this.hashData(newUser.password);
 
     try {
-      const user = new User({
-        email: newUser?.email.toLowerCase(),
-        name: newUser?.name.toLowerCase(),
-        username: newUser?.username.toLowerCase(),
-        password: newPassword,
+      const user = await prisma.user.create({
+        data: {
+          email: newUser.email,
+          name: newUser.name,
+          username: newUser.username,
+          password: newPassword,
+        },
       });
-      await user.save();
       return {
-        id: user._id,
+        id: user.id,
         email: user.email,
       };
     } catch (err) {
