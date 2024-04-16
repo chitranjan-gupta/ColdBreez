@@ -57,6 +57,32 @@ export default class UserService {
     return await User.findOne(selects);
   }
 
+  async delete(user) {
+    const existingEmail = await this.findOneByEmail(user.email);
+
+    if (existingEmail && existingEmail.email) {
+      await User.findOneAndDelete({ email: user.email });
+      return {
+        message: "USER_DELETED",
+        tokens: {
+          access_token: null,
+          refresh_token: null,
+        },
+        httperror: {
+          statusCode: undefined,
+          message: undefined,
+        },
+      };
+    } else {
+      return {
+        httperror: {
+          statusCode: 404,
+          message: "user with email doesn't exists",
+        },
+      };
+    }
+  }
+
   async create(newUser) {
     const { email } = newUser;
     const existingUser = await this.findOneByEmail(email.toLowerCase());
