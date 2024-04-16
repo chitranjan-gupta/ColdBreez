@@ -9,7 +9,7 @@ export type CommentFormProps = {
 };
 
 export type CommentViewProps = {
-  _id: string;
+  _id?: string;
   profileUrl: string;
   userId: User;
   createdAt: string;
@@ -29,7 +29,7 @@ export type CommentViewProps = {
 };
 
 export type comment = {
-  _id: string;
+  _id?: string;
   profileUrl: string;
   userId: User;
   createdAt: string;

@@ -90,7 +90,7 @@ export default class CommentService {
         }
         const comment = await Comment.findOne({ _id: payload.commentId });
         if (comment) {
-          await Comment.findOneAndDelete({ _id: payload.commentId });
+          await this.recursiveDelete(payload.commentId);
           return comment;
         } else {
           return false;
@@ -99,6 +99,18 @@ export default class CommentService {
     } catch (err) {
       this.logger.error(err);
       return false;
+    }
+  }
+
+  private async recursiveDelete(commentId) {
+    const comment = await Comment.findOne({ _id: commentId });
+    if (comment) {
+      if (comment.children && comment.children.length > 0) {
+        for (let i = 0; i < comment.children.length; i++) {
+          await this.recursiveDelete(comment.children[i]);
+        }
+      }
+      return await Comment.findOneAndDelete({ _id: commentId });
     }
   }
 }

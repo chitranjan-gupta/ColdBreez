@@ -278,15 +278,18 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
           <div className="ml-6 lg:ml-12">
             {props.reply && (
               <Comment
+                key={String(props.children.length+1)}
                 ref={newRef}
                 isEdit={true}
                 comment={{
-                  _id: String(props.children.length + 1),
                   profileUrl: props.profileUrl,
                   userId:
                     props.userId && props.userId.name
                       ? props.userId
-                      : { _id: "Anonymous User", name: "Anonymous User" },
+                      : {
+                          _id: "661540dcc9dd75cc41f93879",
+                          name: "Anonymous User",
+                        },
                   createdAt: new Date().toDateString(),
                   message: "",
                   children: [],
@@ -299,7 +302,7 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
             {props.children.map((child) => (
               <>
                 {child instanceof Object ? (
-                  <Comment comment={child} isEdit={false} />
+                  <Comment key={child._id} comment={child} isEdit={false} />
                 ) : (
                   <SuspenseComment key={child.toString()} _id={child} />
                 )}
@@ -322,6 +325,7 @@ const Comment = forwardRef<HTMLTextAreaElement, CommentProps>(
     const [reply, setReply] = useState(false); // Enable reply to comment
     return (
       <CommentView
+        key={props.comment._id}
         ref={ref}
         edit={edit}
         setEdit={setEdit}
@@ -347,7 +351,7 @@ const SuspenseComment = forwardRef<HTMLTextAreaElement, { _id: string }>(
         {isLoading ? (
           "Loading..."
         ) : (
-          <Comment comment={comment} isEdit={false} />
+          <Comment key={props._id} comment={comment} isEdit={false} />
         )}
       </>
     );
