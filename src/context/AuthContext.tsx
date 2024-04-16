@@ -17,6 +17,8 @@ type AuthContextProps = {
 
 export const AuthContext = createContext<AuthProps>({});
 
+let ready = false;
+
 export const AuthContextProvider = ({ children }: AuthContextProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -60,7 +62,22 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
         setIsLoading(false);
       }
     }
-    void checkAuthentication("/api/auth/", false);
+    if (process.env.NODE_ENV === "production") {
+      if (typeof window !== "undefined") {
+        void checkAuthentication("/api/auth/", false);
+      }
+    } else if (process.env.NODE_ENV === "development") {
+      if (ready) {
+        if (typeof window !== "undefined") {
+          void checkAuthentication("/api/auth/", false);
+        }
+      }
+      if (ready) {
+        ready = false;
+      } else {
+        ready = true;
+      }
+    }
   }, []);
   return (
     <AuthContext.Provider

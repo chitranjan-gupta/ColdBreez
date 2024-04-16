@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import UnAuthorized from "./unauthorized";
+
+let ready = false;
+
 export default function SignOut() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -34,7 +37,22 @@ export default function SignOut() {
         setIsLoading(false);
       }
     }
-    void signout();
+    if (process.env.NODE_ENV === "production") {
+      if (typeof window !== "undefined") {
+        void signout();
+      }
+    } else if (process.env.NODE_ENV === "development") {
+      if (ready) {
+        if (typeof window !== "undefined") {
+          void signout();
+        }
+      }
+      if (ready) {
+        ready = false;
+      } else {
+        ready = true;
+      }
+    }
   }, []);
   return (
     <>

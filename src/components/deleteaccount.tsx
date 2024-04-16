@@ -37,23 +37,22 @@ export default function DeleteAccount() {
     }
   }
   useEffect(() => {
-    // if (process.env.NODE_ENV === "production") {
-    //   if (typeof window !== "undefined") {
-    //     void deleteaccount();
-    //   }
-    // } else if (process.env.NODE_ENV === "development") {
-    //   if (ready) {
-    //     if (typeof window !== "undefined") {
-    //       void deleteaccount();
-    //     }
-    //   }
-    //   if (ready) {
-    //     ready = false;
-    //   } else {
-    //     ready = true;
-    //   }
-    // }
-    void deleteaccount();
+    if (process.env.NODE_ENV === "production") {
+      if (typeof window !== "undefined") {
+        void deleteaccount();
+      }
+    } else if (process.env.NODE_ENV === "development") {
+      if (ready) {
+        if (typeof window !== "undefined") {
+          void deleteaccount();
+        }
+      }
+      if (ready) {
+        ready = false;
+      } else {
+        ready = true;
+      }
+    }
   }, []);
   return (
     <>
