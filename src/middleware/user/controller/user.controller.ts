@@ -41,7 +41,7 @@ const UserController = async (req: Request, res: Response) => {
         case "/api/user/delete": {
           const usersService = new UserService(logger);
           const response = await usersService.delete((req as any).user);
-          if (response.httperror) {
+          if (response.httperror && response.httperror.statusCode) {
             return new Promise<void>((resolve) => {
               res
                 .status(response.httperror.statusCode)
@@ -60,7 +60,6 @@ const UserController = async (req: Request, res: Response) => {
               sameSite: "lax",
             });
             delete response.httperror;
-            delete response.tokens;
             return new Promise<void>((resolve) => {
               res.status(200).json(response);
               res.end();
