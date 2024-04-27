@@ -3,7 +3,6 @@ import "@/styles/globals.css";
 import { useEffect, useState } from "react";
 import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 import Common from "@/components/common";
-import Ads from "@/components/ads";
 
 const App = ({ Component, pageProps }) => {
   const [loading, setLoading] = useState(false);
@@ -31,7 +30,6 @@ const App = ({ Component, pageProps }) => {
       <Common />
       {process.env.NODE_ENV === "production" ? (
         <>
-          <Ads />
           <GoogleTagManager gtmId={String(process.env.NEXT_PUBLIC_GTM_ID)} />
           <GoogleAnalytics gaId={String(process.env.NEXT_PUBLIC_GA_ID)} />
         </>
