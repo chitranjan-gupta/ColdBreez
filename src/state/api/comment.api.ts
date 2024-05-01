@@ -1,11 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { WEBSITE_URL } from "@/lib/name";
 import type { comment } from "@/types/index";
 
 export const commentApi = createApi({
   reducerPath: "commentApi",
   baseQuery: fetchBaseQuery({
     baseUrl:
-      "https://3000-chitranjangup-coldbreez-5imneqe51q8.ws-us110.gitpod.io/api/comment",
+      `https://psychic-barnacle-vgwj747wxqjc6xx7-3000.app.github.dev/api/comment`,
   }),
   tagTypes: ["comment"],
   endpoints: (builder) => ({

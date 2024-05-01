@@ -41,7 +41,7 @@ const CommentController = async (req: Request, res: Response) => {
             });
           } else {
             return new Promise<void>((resolve) => {
-              res.status(400).json({ message: "COMMENT_NOT_UPDATED" });
+              res.status(404).json({ message: "COMMENT_NOT_PRESENT" });
               res.end();
               return resolve();
             });

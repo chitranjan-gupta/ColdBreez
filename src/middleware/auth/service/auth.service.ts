@@ -124,6 +124,7 @@ export default class AuthService {
     const data: JwtPayload = {
       userId: user._id,
       email: user.email,
+      name: user.name,
     };
     const access_token = jwt.sign(
       data,

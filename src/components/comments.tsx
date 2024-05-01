@@ -1,4 +1,4 @@
-import { useState, useRef, forwardRef, useEffect } from "react";
+import { useState, useRef, forwardRef, useId } from "react";
 import type { FormEvent } from "react";
 import Image from "next/image";
 import {
@@ -28,6 +28,7 @@ import {
   useUpdateCommentMutation,
   useDeleteCommentMutation,
 } from "state/api/comment.api";
+import { useAuthContext } from "@/context/AuthContext";
 
 const CommentForm = forwardRef<HTMLTextAreaElement, CommentFormProps>(
   function CommentForm(props, ref) {
@@ -70,7 +71,6 @@ const CommentForm = forwardRef<HTMLTextAreaElement, CommentFormProps>(
                     name="anonymous"
                     className="rounded-xl outline-none"
                   />
-                  <input type="hidden" name="anonymous" value="off" />
                   <label className="ml-2">Comment as Anonymous User</label>
                 </div>
                 <div className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
@@ -90,6 +90,7 @@ const CommentForm = forwardRef<HTMLTextAreaElement, CommentFormProps>(
 
 const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
   function CommentView(props, ref) {
+    const { userId, email, name } = useAuthContext();
     const [deleteComment, { isLoading: isDeleting }] =
       useDeleteCommentMutation();
     const [updateComment, { isLoading: isUpdating }] =
@@ -120,11 +121,16 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
         const jsonData = (function (formData) {
           const json = {};
           json["postId"] = "d116ded5-268f-4971-a85a-0c9925a0af03";
-          json["userId"] =
-            formData.get("anonymous").toString() == "on"
-              ? "661540dcc9dd75cc41f93879"
-              : "661540dcc9dd75cc41f93899";
-          formData.delete("anonymous");
+          if (
+            !userId ||
+            (formData.has("anonymous") &&
+              formData.get("anonymous").toString() == "on")
+          ) {
+            json["userId"] = "661540dcc9dd75cc41f93879";
+            formData.delete("anonymous");
+          } else {
+            json["userId"] = userId;
+          }
           if (props.parentID) {
             json["parentId"] = props.parentID;
           } else {
@@ -149,7 +155,11 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
       const jsonData = (function () {
         const json = {};
         json["postId"] = "d116ded5-268f-4971-a85a-0c9925a0af03";
-        json["userId"] = "661540dcc9dd75cc41f93899";
+        if (!userId) {
+          json["userId"] = "661540dcc9dd75cc41f93879";
+        } else {
+          json["userId"] = userId;
+        }
         if (props.parentId) {
           json["parentId"] = props.parentId;
         }
@@ -278,14 +288,17 @@ const CommentView = forwardRef<HTMLTextAreaElement, CommentViewProps>(
           <div className="ml-6 lg:ml-12">
             {props.reply && (
               <Comment
-                key={String(props.children.length+1)}
+                key={String(props.children.length + 1)}
                 ref={newRef}
                 isEdit={true}
                 comment={{
                   profileUrl: props.profileUrl,
                   userId:
-                    props.userId && props.userId.name
-                      ? props.userId
+                    userId && name
+                      ? {
+                          _id: userId,
+                          name: name,
+                        }
                       : {
                           _id: "661540dcc9dd75cc41f93879",
                           name: "Anonymous User",
@@ -359,6 +372,7 @@ const SuspenseComment = forwardRef<HTMLTextAreaElement, { _id: string }>(
 );
 
 export default function Comments() {
+  const { userId, email } = useAuthContext();
   const [message, setMessage] = useState("");
   const { data: comments, isLoading, isError, error } = useGetCommentsQuery();
   const [addComment, { isLoading: loading }] = useAddCommentMutation();
@@ -368,11 +382,16 @@ export default function Comments() {
     const jsonData = (function (formData) {
       const json = {};
       json["postId"] = "d116ded5-268f-4971-a85a-0c9925a0af03";
-      json["userId"] =
-        formData.get("anonymous").toString() == "on"
-          ? "661540dcc9dd75cc41f93879"
-          : "661540dcc9dd75cc41f93899";
-      formData.delete("anonymous");
+      if (
+        !userId ||
+        (formData.has("anonymous") &&
+          formData.get("anonymous").toString() == "on")
+      ) {
+        json["userId"] = "661540dcc9dd75cc41f93879";
+        formData.delete("anonymous");
+      } else {
+        json["userId"] = userId;
+      }
       formData.forEach((value, key) => {
         json[key] = value;
       });

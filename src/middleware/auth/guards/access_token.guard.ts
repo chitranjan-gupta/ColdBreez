@@ -32,6 +32,7 @@ const AccessTokenGuard = (handler, method) => {
       let user = {
         userId: (data as any).userId,
         email: (data as any).email,
+        name: (data as any).name,
       };
       (req as any).user = user;
       return handler(req, res);

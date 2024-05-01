@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useContext } from "react";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import UnAuthorized from "@/components/unauthorized";
 
@@ -9,6 +9,8 @@ type AuthProps = {
   setUserId?: Dispatch<SetStateAction<string>>;
   email?: string;
   setEmail?: Dispatch<SetStateAction<string>>;
+  name?: string;
+  setName?: Dispatch<SetStateAction<string>>;
 };
 
 type AuthContextProps = {
@@ -16,6 +18,10 @@ type AuthContextProps = {
 };
 
 export const AuthContext = createContext<AuthProps>({});
+
+export const useAuthContext = () => {
+  return useContext(AuthContext);
+};
 
 let ready = false;
 
@@ -26,6 +32,7 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userId, setUserId] = useState<string>();
   const [email, setEmail] = useState<string>();
+  const [name, setName] = useState<string>();
   useEffect(() => {
     async function checkAuthentication(url: string, refresh: boolean) {
       setIsLoading(true);
@@ -51,7 +58,19 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
         }
         if (response.ok) {
           setIsAuthenticated(true);
-          console.log(data);
+          if (data) {
+            if (data.email) {
+              setEmail(data.email);
+            }
+
+            if (data.userId) {
+              setUserId(data.userId);
+            }
+
+            if (data.name) {
+              setName(data.name);
+            }
+          }
         }
       } catch (error) {
         setIsAuthenticated(false);
@@ -88,6 +107,8 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
         setUserId,
         email,
         setEmail,
+        name,
+        setName,
       }}
     >
       {isAuthenticated ? (

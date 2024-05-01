@@ -15,7 +15,7 @@ const AuthController = async (req: Request, res: Response) => {
       switch (url.pathname) {
         case "/api/auth": {
           return new Promise<void>((resolve) => {
-            res.status(200).json({ message: (req as any).user });
+            res.status(200).json((req as any).user);
             res.end();
             return resolve();
           });

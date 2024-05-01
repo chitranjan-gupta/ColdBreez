@@ -32,6 +32,7 @@ const RefreshTokenGuard = (handler, method) => {
       let user = {
         userId: verifyRefreshToken.userId,
         email: verifyRefreshToken.email,
+        name: verifyRefreshToken.name,
         refresh_token: refresh_token,
       };
       (req as any).user = user;

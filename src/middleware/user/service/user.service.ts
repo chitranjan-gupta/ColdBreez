@@ -108,6 +108,7 @@ export default class UserService {
       return {
         id: user._id,
         email: user.email,
+        name: user.name
       };
     } catch (err) {
       this.logger.error(err);

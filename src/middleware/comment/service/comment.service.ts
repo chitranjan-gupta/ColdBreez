@@ -41,12 +41,21 @@ export default class CommentService {
   async update(payload) {
     try {
       if (payload.commentId) {
-        const comment = await Comment.findOneAndUpdate(
-          { _id: payload.commentId },
-          { message: payload.message },
-          { new: true },
-        );
-        return comment;
+        const existingComment = await Comment.findById(payload.commentId);
+        if (existingComment) {
+          if (existingComment.userId == payload.userId) {
+            const comment = await Comment.findOneAndUpdate(
+              { _id: payload.commentId },
+              { message: payload.message },
+              { new: true },
+            );
+            return comment;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
       } else {
         return false;
       }
@@ -82,19 +91,30 @@ export default class CommentService {
   async delete(payload) {
     try {
       if (payload.commentId) {
-        if (payload.parentId) {
-          await Comment.findOneAndUpdate(
-            { _id: payload.parentId },
-            { $pull: { children: payload.commentId } },
-          );
-        }
-        const comment = await Comment.findOne({ _id: payload.commentId });
-        if (comment) {
-          await this.recursiveDelete(payload.commentId);
-          return comment;
+        const existingComment = await Comment.findById(payload.commentId);
+        if (existingComment) {
+          if (existingComment.userId == payload.userId) {
+            if (payload.parentId) {
+              await Comment.findOneAndUpdate(
+                { _id: payload.parentId },
+                { $pull: { children: payload.commentId } },
+              );
+            }
+            const comment = await Comment.findOne({ _id: payload.commentId });
+            if (comment) {
+              await this.recursiveDelete(payload.commentId);
+              return comment;
+            } else {
+              return false;
+            }
+          } else {
+            return false;
+          }
         } else {
           return false;
         }
+      } else {
+        return false;
       }
     } catch (err) {
       this.logger.error(err);
