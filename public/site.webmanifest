@@ -1,6 +1,8 @@
 {
   "name": "coldbreez",
   "short_name": "coldbreez",
+  "start_url": ".",
+  "description": "Get the latest news.",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
